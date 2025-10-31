@@ -1,0 +1,105 @@
+name: CI
+
+permissions: {}
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: build +${{ matrix.toolchain }} ${{ matrix.flags }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [stable, nightly]
+        flags:
+          - ""
+          - --via-ir
+          - --use solc:0.8.17 --via-ir
+          - --use solc:0.8.17
+          - --use solc:0.8.0
+          - --use solc:0.7.6
+          - --use solc:0.7.0
+          - --use solc:0.6.2
+          - --use solc:0.6.12
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: forge --version
+      - run: |
+          case "${{ matrix.flags }}" in
+            *)
+              forge build --skip test --deny-warnings ${{ matrix.flags }}
+              ;;
+          esac
+      # via-ir compilation time checks.
+      - if: contains(matrix.flags, '--via-ir')
+        run: forge build --skip test --deny-warnings ${{ matrix.flags }} --contracts 'test/compilation/*'
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [stable, nightly]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: ${{ matrix.toolchain }}
+      - run: forge --version
+      - run: forge test -vvv
+
+  fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: forge --version
+      - run: forge fmt --check
+
+  typos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: crate-ci/typos@80c8a4945eec0f6d464eaf9e65ed98ef085283d1 # v1
+
+  ci-success:
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - build
+      - test
+      - fmt
+      - typos
+    timeout-minutes: 10
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
