@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.6.2 <0.9.0;
+
+/// @title Standard Precompiles Library for Tempo
+///
+/// @notice <https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/lib.rs>
+library StdPrecompiles {
+    address internal constant TIP_FEE_MANAGER_ADDRESS = 0xfeEC000000000000000000000000000000000000;
+    address internal constant LINKING_USD_ADDRESS = 0x20C0000000000000000000000000000000000000;
+    address internal constant DEFAULT_FEE_TOKEN = 0x20C0000000000000000000000000000000000001;
+    address internal constant TIP403_REGISTRY_ADDRESS = 0x403c000000000000000000000000000000000000;
+    address internal constant TIP20_FACTORY_ADDRESS = 0x20Fc000000000000000000000000000000000000;
+    address internal constant TIP20_REWARDS_REGISTRY_ADDRESS = 0x2100000000000000000000000000000000000000;
+    address internal constant TIP4217_REGISTRY_ADDRESS = 0x4217c00000000000000000000000000000000000;
+    address internal constant TIP_ACCOUNT_REGISTRAR = 0x7702ac0000000000000000000000000000000000;
+    address internal constant STABLECOIN_EXCHANGE_ADDRESS = 0xDEc0000000000000000000000000000000000000;
+    address internal constant NONCE_PRECOMPILE_ADDRESS = 0x4e4F4E4345000000000000000000000000000000;
+}
