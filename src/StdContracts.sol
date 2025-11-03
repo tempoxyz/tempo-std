@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 ///
 /// @notice <https://github.com/tempoxyz/tempo/tree/main/crates/contracts/src/lib.rs>
 library StdContracts {
-    address internal constant MULTICALL_ADDRESS = 0xcA11bde05977b3631167028862bE2a173976CA11;
+    address internal constant MULTICALL3_ADDRESS = 0xcA11bde05977b3631167028862bE2a173976CA11;
     address internal constant CREATEX_ADDRESS = 0xba5Ed099633D3B313e4D5F7bdc1305d3c28ba5Ed;
     address internal constant SAFE_DEPLOYER_ADDRESS = 0x914d7Fec6aaC8cd542e72Bca78B30650d45643d7;
     address internal constant PERMIT2_ADDRESS = 0x000000000022D473030F116dDEE9F6B43aC78BA3;
