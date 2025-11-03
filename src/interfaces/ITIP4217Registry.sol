@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.2 <0.9.0;
+pragma solidity ^0.8.13;
 
 /// @title The interface for TIP-4217 currency registry
 /// @notice Registry for managing currency identifiers and their decimal precision according to ISO 4217 standard

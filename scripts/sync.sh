@@ -26,9 +26,6 @@ function main () {
     cp -r specs/specs/src/interfaces src
     rm -rf specs
 
-    # Specify broader compatibility for interface specs
-    find src/interfaces -type f -name "*.sol" -exec sed -i 's/^pragma solidity \^0\.8\.13;/pragma solidity >=0.6.2 <0.9.0;/' {} +
-
     # Format the code
     forge fmt
 

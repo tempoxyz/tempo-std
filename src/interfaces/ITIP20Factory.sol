@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.2 <0.9.0;
+pragma solidity ^0.8.13;
 
 /// @title The interface for TIP-20 token factory
 /// @notice Factory contract for creating and deploying TIP-20 compliant tokens
