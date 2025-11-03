@@ -10,7 +10,7 @@ forge install tempoxyz/tempo-std
 
 ### Contracts
 
-```
+```ml
 src/
 ├── interfaces
 │   ├── IStablecoinExchange.sol
