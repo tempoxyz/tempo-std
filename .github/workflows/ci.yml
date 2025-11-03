@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 permissions: {}
 
@@ -23,13 +23,8 @@ jobs:
         flags:
           - ""
           - --via-ir
-          - --use solc:0.8.17 --via-ir
-          - --use solc:0.8.17
-          - --use solc:0.8.0
-          - --use solc:0.7.6
-          - --use solc:0.7.0
-          - --use solc:0.6.2
-          - --use solc:0.6.12
+          - --use solc:0.8.13 --via-ir
+          - --use solc:0.8.13
     steps:
       - uses: actions/checkout@v5
         with:
