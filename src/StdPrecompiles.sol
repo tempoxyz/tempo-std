@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 /// @title Standard Precompiles Library for Tempo
 ///
-/// @notice <https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/lib.rs>
+/// @notice <https://github.com/tempoxyz/tempo/blob/main/crates/contracts/src/precompiles/mod.rs>
 library StdPrecompiles {
     address internal constant TIP_FEE_MANAGER_ADDRESS = 0xfeEC000000000000000000000000000000000000;
     address internal constant LINKING_USD_ADDRESS = 0x20C0000000000000000000000000000000000000;
@@ -15,4 +15,5 @@ library StdPrecompiles {
     address internal constant TIP_ACCOUNT_REGISTRAR = 0x7702ac0000000000000000000000000000000000;
     address internal constant STABLECOIN_EXCHANGE_ADDRESS = 0xDEc0000000000000000000000000000000000000;
     address internal constant NONCE_PRECOMPILE_ADDRESS = 0x4e4F4E4345000000000000000000000000000000;
+    address internal constant VALIDATOR_CONFIG_ADDRESS = 0xCccCcCCC00000000000000000000000000000000;
 }
