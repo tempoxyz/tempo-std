@@ -8,20 +8,6 @@ Tempo Standard Library is a collection of helpful Tempo specific contracts and l
 forge install tempoxyz/tempo-std
 ```
 
-### Contracts
-
-```ml
-src/
-├── interfaces
-│   ├── IStablecoinExchange.sol
-│   ├── ITIP20Factory.sol
-│   ├── ITIP20.sol
-│   ├── ITIP403Registry.sol
-│   └── ITIP4217Registry.sol
-├── StdContracts.sol
-└── StdPrecompiles.sol
-```
-
 ### Support
 
 The current minimum supported Solidity version is `0.8.13`.
