@@ -246,4 +246,8 @@ interface ITIP20 {
 
     // TODO: docs
     function systemTransferFrom(address from, address to, uint256 amount) external returns (bool);
+
+    /// @notice Finalizes all TIP20 reward streams ending at `endTime`
+    /// @param endTime Timestamp used to specify which reward streams to finalize
+    function finalizeStreams(uint128 endTime) external;
 }
