@@ -23,9 +23,14 @@ interface ITIP20Factory {
     /// @param name The name for the new token
     /// @param symbol The symbol for the new token
     /// @param currency The currency identifier for the new token
+    /// @param quoteToken The quote token address associated with the new token
     /// @param admin The address to be assigned as the admin of the new token
     /// @return The address of the newly created token contract
-    function createToken(string memory name, string memory symbol, string memory currency, address admin)
-        external
-        returns (address);
+    function createToken(
+        string memory name,
+        string memory symbol,
+        string memory currency,
+        address quoteToken,
+        address admin
+    ) external returns (address);
 }
