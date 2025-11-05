@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import {ITIP20} from "./ITIP20.sol";
+
 /// @title The interface for TIP-20 token factory
 /// @notice Factory contract for creating and deploying TIP-20 compliant tokens
 interface ITIP20Factory {
@@ -23,14 +25,13 @@ interface ITIP20Factory {
     /// @param name The name for the new token
     /// @param symbol The symbol for the new token
     /// @param currency The currency identifier for the new token
-    /// @param quoteToken The quote token address associated with the new token
     /// @param admin The address to be assigned as the admin of the new token
     /// @return The address of the newly created token contract
     function createToken(
         string memory name,
         string memory symbol,
         string memory currency,
-        address quoteToken,
+        ITIP20 quoteToken,
         address admin
     ) external returns (address);
 }
