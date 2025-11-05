@@ -29,6 +29,7 @@ interface ITIP20 {
     error StreamInactive();
     error NoOptedInSupply();
     error InvalidSupplyCap();
+    error SupplyCapExceeded();
 
     /// @notice Emitted when the transfer policy is updated
     /// @param updater The address that initiated the policy update
