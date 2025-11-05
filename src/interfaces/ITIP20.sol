@@ -16,18 +16,6 @@ interface ITIP20 {
     /// @notice Error when the spender has insufficient allowance for the requested transfer
     error InsufficientAllowance();
 
-    /// @notice Error when a signature verification fails
-    error InvalidSignature();
-
-    /// @notice Error when a permit or signature-based operation has expired
-    error Expired();
-
-    /// @notice Error when attempting to use a salt that has already been consumed
-    error SaltAlreadyUsed();
-
-    /// @notice Error when a mint operation would exceed the token's supply cap
-    error SupplyCapExceeded();
-
     /// @notice Error when attempting an operation while the contract is paused
     error ContractPaused();
 
@@ -120,10 +108,6 @@ interface ITIP20 {
     // TODO: docs
     function nextQuoteToken() external view returns (ITIP20);
 
-    /// @notice Returns the domain separator used for permit signatures
-    /// @return The domain separator hash
-    function DOMAIN_SEPARATOR() external view returns (bytes32);
-
     /// @notice Returns the role identifier for pausing the contract
     /// @return The pause role identifier
     function PAUSE_ROLE() external view returns (bytes32);
@@ -158,11 +142,6 @@ interface ITIP20 {
     /// @param spender The address that is approved to spend the tokens
     /// @return The allowance amount
     function allowance(address owner, address spender) external view returns (uint256);
-
-    /// @notice Returns the current nonce for permit signatures for a given owner
-    /// @param owner The address to query the nonce for
-    /// @return The current nonce value
-    function nonces(address owner) external view returns (uint256);
 
     /// @notice Returns whether the contract is currently paused
     /// @return True if the contract is paused, false otherwise
@@ -229,17 +208,6 @@ interface ITIP20 {
     /// @param amount The amount of tokens to transfer
     /// @return success True if the transfer was successful
     function transferFrom(address from, address to, uint256 amount) external returns (bool);
-
-    /// @notice Approves spending via signature (EIP-2612)
-    /// @param owner The address that owns the tokens
-    /// @param spender The address to approve for spending
-    /// @param value The amount to approve
-    /// @param deadline The deadline for the permit signature
-    /// @param v The recovery byte of the signature
-    /// @param r The r component of the signature
-    /// @param s The s component of the signature
-    function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)
-        external;
 
     /// @notice Transfers tokens with an attached memo
     /// @param to The address to transfer tokens to
