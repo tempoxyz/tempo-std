@@ -22,7 +22,8 @@ function main () {
     log $GREEN "Syncing specifications"
 
     # Clone specs repo and copy interface specs
-    git clone --depth 1 git@github.com:tempoxyz/docs.git specs
+    rm -rf src/interfaces
+    git clone --depth 1 -b zerosnacks/implementation-should-adhere-to-interface git@github.com:tempoxyz/docs.git specs
     cp -r specs/specs/src/interfaces src
     rm -rf specs
 
