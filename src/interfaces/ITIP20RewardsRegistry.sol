@@ -7,9 +7,12 @@ interface ITIP20RewardsRegistry {
     error Unauthorized();
     error StreamsAlreadyFinalized();
 
-    /// @notice Finalize streams for all tokens ending at the current timestamp
-    function finalizeStreams() external;
-
     /// @notice Add a token to the registry for a given stream end time
     function addStream(uint128 endTime) external;
+
+    /// @notice Remove a stream before it ends (for cancellation)
+    function removeStream(uint128 endTime) external;
+
+    /// @notice Finalize streams for all tokens ending at the current timestamp
+    function finalizeStreams() external;
 }
