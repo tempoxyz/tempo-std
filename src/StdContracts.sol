@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import {IMulticall3} from "./interfaces/IMulticall3.sol";
+import {ICreateX} from "./interfaces/ICreateX.sol";
+import {IPermit2} from "./interfaces/IPermit2.sol";
+
 /// @title Standard Contracts Library for Tempo
 ///
 /// @notice <https://github.com/tempoxyz/tempo/tree/main/crates/contracts/src/lib.rs>
@@ -11,4 +15,8 @@ library StdContracts {
     address internal constant PERMIT2_ADDRESS = 0x000000000022D473030F116dDEE9F6B43aC78BA3;
     address internal constant DEFAULT_7702_DELEGATE_ADDRESS = 0x7702c00000000000000000000000000000000000;
     address internal constant ARACHNID_CREATE2_FACTORY_ADDRESS = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+
+    IMulticall3 internal constant MULTICALL3 = IMulticall3(MULTICALL3_ADDRESS);
+    ICreateX internal constant CREATEX = ICreateX(CREATEX_ADDRESS);
+    IPermit2 internal constant PERMIT2 = IPermit2(PERMIT2_ADDRESS);
 }
