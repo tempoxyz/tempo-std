@@ -1,3 +1,18 @@
+<br>
+<br>
+
+<p align="center">
+  <a href="https://tempo.xyz">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/tempoxyz/.github/refs/heads/main/assets/combomark-dark.svg">
+      <img alt="tempo combomark" src="https://raw.githubusercontent.com/tempoxyz/.github/refs/heads/main/assets/combomark-bright.svg" width="auto" height="120">
+    </picture>
+  </a>
+</p>
+
+<br>
+<br>
+
 # Tempo Standard Library
 
 Tempo Standard Library is a collection of helpful Tempo specific contracts and libraries for use with [Foundry](https://github.com/foundry-rs/foundry).
@@ -6,6 +21,30 @@ Tempo Standard Library is a collection of helpful Tempo specific contracts and l
 
 ```
 forge install tempoxyz/tempo-std
+```
+
+### Contracts
+
+```ml
+src
+├── interfaces
+│   ├── ICreateX.sol
+│   ├── IERC20.sol
+│   ├── IFeeAMM.sol
+│   ├── IFeeManager.sol
+│   ├── ILinkingUSD.sol
+│   ├── IMulticall3.sol
+│   ├── INonce.sol
+│   ├── IPermit2.sol
+│   ├── IStablecoinExchange.sol
+│   ├── ITIP20Factory.sol
+│   ├── ITIP20RewardsRegistry.sol
+│   ├── ITIP20RolesAuth.sol
+│   ├── ITIP20.sol
+│   ├── ITIP403Registry.sol
+│   └── ITIPAccountRegistrar.sol
+├── StdContracts.sol
+└── StdPrecompiles.sol
 ```
 
 ### Support
