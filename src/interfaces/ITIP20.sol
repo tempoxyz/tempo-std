@@ -103,7 +103,8 @@ interface ITIP20 {
     /// @return The number of decimals
     function decimals() external view returns (uint8);
 
-    // TODO: docs
+    /// @notice Returns the quote token specified for the TIP20 token
+    /// @return Address of the quote token
     function quoteToken() external view returns (ITIP20);
 
     // TODO: docs
