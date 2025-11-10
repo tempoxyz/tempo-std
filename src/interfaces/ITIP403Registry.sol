@@ -79,7 +79,7 @@ interface ITIP403Registry {
     /// @param policyType The type of policy to create (whitelist or blacklist)
     /// @param accounts The initial accounts to add to the policy list
     /// @return newPolicyId The ID of the newly created policy
-    function createPolicy(address admin, PolicyType policyType, address[] memory accounts)
+    function createPolicyWithAccounts(address admin, PolicyType policyType, address[] calldata accounts)
         external
         returns (uint64 newPolicyId);
 
