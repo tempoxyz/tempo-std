@@ -11,7 +11,7 @@ interface ITIP20 {
     error InvalidRecipient();
 
     /// @notice Error when an account has insufficient balance for the requested operation
-    error InsufficientBalance();
+    error InsufficientBalance(uint256 currentBalance, uint256 expectedBalance, address);
 
     /// @notice Error when the spender has insufficient allowance for the requested transfer
     error InsufficientAllowance();

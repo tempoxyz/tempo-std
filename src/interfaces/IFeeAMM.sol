@@ -41,4 +41,6 @@ interface IFeeAMM {
         uint256 liquidity,
         address to
     );
+
+    error InsufficientLiquidity();
 }
