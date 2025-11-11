@@ -37,8 +37,7 @@ src
 │   ├── <a href="./src/interfaces/ITIP20RewardsRegistry.sol">ITIP20RewardsRegistry.sol</a>: <a href="https://docs.tempo.xyz/protocol/tokens/reward-distribution#overview">TIP-20: Reward Distribution</a>
 │   ├── <a href="./src/interfaces/ITIP20RolesAuth.sol">ITIP20RolesAuth.sol</a>: <a href="https://docs.tempo.xyz/documentation/tokens/roles">TIP-20: Roles & Permissions</a>
 │   ├── <a href="./src/interfaces/ITIP20.sol">ITIP20.sol</a>: <a href="https://docs.tempo.xyz/protocol/tokens/tip-20">TIP-20: Core Token Standard</a>
-│   ├── <a href="./src/interfaces/ITIP403Registry.sol">ITIP403Registry.sol</a>: <a href="https://docs.tempo.xyz/protocol/tokens/tip-403">TIP-403: Policy Registry System</a>
-│   └── <a href="./src/interfaces/ITIPAccountRegistrar.sol">ITIPAccountRegistrar.sol</a>
+│   └── <a href="./src/interfaces/ITIP403Registry.sol">ITIP403Registry.sol</a>: <a href="https://docs.tempo.xyz/protocol/tokens/tip-403">TIP-403: Policy Registry System</a>
 └── <a href="./src/StdPrecompiles.sol">StdPrecompiles.sol</a>: Collection of precompiles and their interfaces on Tempo
 </pre>
 
