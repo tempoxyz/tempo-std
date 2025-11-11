@@ -7,7 +7,6 @@ import {ITIP20} from "./interfaces/ITIP20.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {ITIP20RewardsRegistry} from "./interfaces/ITIP20RewardsRegistry.sol";
-import {ITIPAccountRegistrar} from "./interfaces/ITIPAccountRegistrar.sol";
 import {IStablecoinExchange} from "./interfaces/IStablecoinExchange.sol";
 import {INonce} from "./interfaces/INonce.sol";
 
