@@ -28,18 +28,18 @@ forge install tempoxyz/tempo-std
 <pre>
 src
 ├── interfaces
-│   ├── <a href="./src/interfaces/IFeeAMM.sol">IFeeAMM.sol</a>
-│   ├── <a href="./src/interfaces/IFeeManager.sol">IFeeManager.sol</a>
-│   ├── <a href="./src/interfaces/ILinkingUSD.sol">ILinkingUSD.sol</a>
-│   ├── <a href="./src/interfaces/INonce.sol">INonce.sol</a>
-│   ├── <a href="./src/interfaces/IStablecoinExchange.sol">IStablecoinExchange.sol</a>
-│   ├── <a href="./src/interfaces/ITIP20Factory.sol">ITIP20Factory.sol</a>
-│   ├── <a href="./src/interfaces/ITIP20RewardsRegistry.sol">ITIP20RewardsRegistry.sol</a>
-│   ├── <a href="./src/interfaces/ITIP20RolesAuth.sol">ITIP20RolesAuth.sol</a>
-│   ├── <a href="./src/interfaces/ITIP20.sol">ITIP20.sol</a>
-│   ├── <a href="./src/interfaces/ITIP403Registry.sol">ITIP403Registry.sol</a>
-│   └── <a href="./src/interfaces/ITIPAccountRegistrar.sol">ITIPAccountRegistrar.sol</a>
-└── <a href="./src/StdPrecompiles.sol">StdPrecompiles.sol</a>
+│   ├── <a href="./src/interfaces/IFeeAMM.sol">IFeeAMM.sol</a>: A
+│   ├── <a href="./src/interfaces/IFeeManager.sol">IFeeManager.sol</a>: B
+│   ├── <a href="./src/interfaces/ILinkingUSD.sol">ILinkingUSD.sol</a>: C
+│   ├── <a href="./src/interfaces/INonce.sol">INonce.sol</a>: D
+│   ├── <a href="./src/interfaces/IStablecoinExchange.sol">IStablecoinExchange.sol</a>: E
+│   ├── <a href="./src/interfaces/ITIP20Factory.sol">ITIP20Factory.sol</a>: F
+│   ├── <a href="./src/interfaces/ITIP20RewardsRegistry.sol">ITIP20RewardsRegistry.sol</a>: G
+│   ├── <a href="./src/interfaces/ITIP20RolesAuth.sol">ITIP20RolesAuth.sol</a>: H
+│   ├── <a href="./src/interfaces/ITIP20.sol">ITIP20.sol</a>: I
+│   ├── <a href="./src/interfaces/ITIP403Registry.sol">ITIP403Registry.sol</a>: J
+│   └── <a href="./src/interfaces/ITIPAccountRegistrar.sol">ITIPAccountRegistrar.sol</a>: K
+└── <a href="./src/StdPrecompiles.sol">StdPrecompiles.sol</a>: L
 </pre>
 
 ### Standard Contracts
