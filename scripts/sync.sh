@@ -26,6 +26,9 @@ function main () {
     cp -r specs/specs/src/interfaces src
     rm -rf specs
 
+    # Remove redundant files
+    rm -f src/interfaces/IERC20.sol
+
     # Format the code
     forge fmt
 
