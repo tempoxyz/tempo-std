@@ -56,6 +56,10 @@ src
 
 The current minimum supported Solidity version is `0.8.13`.
 
+## Contributing
+
+Our contributor guidelines can be found in [`CONTRIBUTING.md`](https://github.com/tempoxyz/tempo-std?tab=contributing-ov-file).
+
 ## Security
 
 See [`SECURITY.md`](https://github.com/tempoxyz/tempo-std?tab=security-ov-file).
