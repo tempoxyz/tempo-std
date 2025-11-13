@@ -26,12 +26,6 @@ interface ITIP403Registry {
     /// @notice Error when attempting to operate on a policy with incompatible type
     error IncompatiblePolicyType();
 
-    /// @notice Error when referencing a policy ID that doesn't exist
-    error PolicyDoesNotExist();
-
-    /// @notice Error when array parameters have mismatched lengths
-    error ArrayLengthMismatch();
-
     /// @notice Emitted when a policy's admin is updated
     /// @param policyId The ID of the policy that was updated
     /// @param updater The address that performed the update
