@@ -19,7 +19,7 @@ Tempo Standard Library is a collection of helpful Tempo specific contracts and l
 
 ## Installation
 
-```
+```bash
 forge install tempoxyz/tempo-std
 ```
 
