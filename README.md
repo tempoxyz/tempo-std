@@ -30,7 +30,6 @@ src
 ├── interfaces
 │   ├── <a href="./src/interfaces/IFeeAMM.sol">IFeeAMM.sol</a>: <a href="https://docs.tempo.xyz/documentation/protocol/fees/fee-amm">Fee AMM</a>
 │   ├── <a href="./src/interfaces/IFeeManager.sol">IFeeManager.sol</a>: <a href="https://docs.tempo.xyz/documentation/protocol/fees/spec-fee-amm#2-feemanager-contract">Fee AMM Management</a>
-│   ├── <a href="./src/interfaces/ILinkingUSD.sol">ILinkingUSD.sol</a>: <a href="https://docs.tempo.xyz/guide/stablecoin-exchange/linkingUSD#linkingusd">LinkingUSD</a>
 │   ├── <a href="./src/interfaces/INonce.sol">INonce.sol</a>: 2D Nonce Management for Account Abstraction
 │   ├── <a href="./src/interfaces/IStablecoinExchange.sol">IStablecoinExchange.sol</a>: <a href="https://docs.tempo.xyz/documentation/protocol/exchange/spec#stablecoin-exchange">Stablecoin Exchange</a>
 │   ├── <a href="./src/interfaces/ITIP20Factory.sol">ITIP20Factory.sol</a>: <a href="https://docs.tempo.xyz/documentation/protocol/tip20/spec#tip20factory">TIP-20: Factory Contract</a>
