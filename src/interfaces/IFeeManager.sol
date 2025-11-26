@@ -12,10 +12,13 @@ interface IFeeManager is IFeeAMM {
         uint256 maxAmount,
         uint256 actualUsed,
         address userToken,
-        address validatorToken
+        address validatorToken,
+        address feeRecipient
     ) external;
 
-    function collectFeePreTx(address user, address txToAddress, uint256 maxAmount) external returns (address userToken);
+    function collectFeePreTx(address user, address txToAddress, uint256 maxAmount, address feeRecipient)
+        external
+        returns (address userToken);
 
     function executeBlock() external;
 
