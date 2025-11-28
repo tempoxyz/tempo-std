@@ -2,7 +2,60 @@
 pragma solidity ^0.8.13;
 
 interface IStablecoinExchange {
+    // Structs for return types
+
+    /// @notice Represents a price level in the orderbook with a doubly-linked list of orders
+    /// @dev Orders are maintained in FIFO order at each tick level
+    struct TickLevel {
+        /// Order ID of the first order at this tick (0 if empty)
+        uint128 head;
+        /// Order ID of the last order at this tick (0 if empty)
+        uint128 tail;
+        /// Total liquidity available at this tick level
+        uint128 totalLiquidity;
+    }
+
+    /// @notice Order data structure for tracking limit orders
+    struct Order {
+        /// Order ID
+        uint128 orderId;
+        /// Address of order maker
+        address maker;
+        /// Orderbook key
+        bytes32 bookKey;
+        /// Bid or ask indicator
+        bool isBid;
+        /// Price tick
+        int16 tick;
+        /// Original order amount
+        uint128 amount;
+        /// Remaining amount to fill
+        uint128 remaining;
+        /// Previous order ID in FIFO queue
+        uint128 prev;
+        /// Next order ID in FIFO queue
+        uint128 next;
+        /// Boolean indicating if order is flipOrder
+        bool isFlip;
+        /// Flip order tick to place new order at once current order fills
+        int16 flipTick;
+    }
+
+    // Errors
     error Unauthorized();
+    error PairDoesNotExist();
+    error PairAlreadyExists();
+    error OrderDoesNotExist();
+    error IdenticalTokens();
+    error TickOutOfBounds(int16 tick);
+    error InvalidTick();
+    error InvalidFlipTick();
+    error InsufficientBalance();
+    error InsufficientLiquidity();
+    error InsufficientOutput();
+    error MaxInputExceeded();
+    error BelowMinimumOrderSize(uint128 amount);
+    error InvalidBaseToken();
 
     event FlipOrderPlaced(
         uint128 indexed orderId,
@@ -30,6 +83,8 @@ interface IStablecoinExchange {
 
     function MIN_TICK() external view returns (int16);
 
+    function TICK_SPACING() external view returns (int16);
+
     function PRICE_SCALE() external view returns (uint32);
 
     function activeOrderId() external view returns (uint128);
@@ -51,6 +106,8 @@ interface IStablecoinExchange {
         external
         view
         returns (uint128 head, uint128 tail, uint128 totalLiquidity);
+
+    function getOrder(uint128 orderId) external view returns (Order memory);
 
     function pairKey(address tokenA, address tokenB) external pure returns (bytes32 key);
 
