@@ -23,9 +23,14 @@ interface ITIP20 {
     error InvalidSupplyCap();
     error NoOptedInSupply();
     error NotStreamFunder();
+    /// @notice Error when starting a reward stream with seconds > 0
+    error ScheduledRewardsDisabled();
 
     /// @notice Error when a transfer is blocked by the current transfer policy.
     error PolicyForbids();
+
+    /// @notice Error when attempting to burn from a protected address.
+    error ProtectedAddress();
     error StreamInactive();
     error SupplyCapExceeded();
 
