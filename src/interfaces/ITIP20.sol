@@ -17,6 +17,7 @@ interface ITIP20 {
     /// @notice Error when an invalid currency identifier is provided.
     error InvalidCurrency();
     error InvalidQuoteToken();
+    error InvalidBaseToken();
 
     /// @notice Error when attempting to transfer to an invalid recipient address.
     error InvalidRecipient();
