@@ -8,6 +8,7 @@ import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {ITIP20RewardsRegistry} from "./interfaces/ITIP20RewardsRegistry.sol";
 import {IStablecoinExchange} from "./interfaces/IStablecoinExchange.sol";
+import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
 import {INonce} from "./interfaces/INonce.sol";
 
 /// @title Standard Precompiles Library for Tempo
@@ -32,5 +33,6 @@ library StdPrecompiles {
         ITIP20RewardsRegistry(TIP20_REWARDS_REGISTRY_ADDRESS);
     IStablecoinExchange internal constant STABLECOIN_EXCHANGE = IStablecoinExchange(STABLECOIN_EXCHANGE_ADDRESS);
     INonce internal constant NONCE_PRECOMPILE = INonce(NONCE_ADDRESS);
+    IValidatorConfig internal constant VALIDATOR_CONFIG = IValidatorConfig(VALIDATOR_CONFIG_ADDRESS);
     IAccountKeychain internal constant ACCOUNT_KEYCHAIN = IAccountKeychain(ACCOUNT_KEYCHAIN_ADDRESS);
 }
