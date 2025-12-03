@@ -22,13 +22,12 @@ function main () {
     log $GREEN "Syncing specifications"
 
     # Clone specs repo and copy interface specs
-    git clone --depth 1 git@github.com:tempoxyz/docs.git specs
+    git clone --depth 1 -b feat/allegretto git@github.com:tempoxyz/docs.git specs
     cp -r specs/specs/src/interfaces src
     rm -rf specs
 
     # Remove redundant files
     rm -f src/interfaces/IERC20.sol
-    rm -f src/interfaces/ITIPAccountRegistrar.sol
 
     # Format the code
     forge fmt
