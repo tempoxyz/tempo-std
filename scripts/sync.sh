@@ -28,7 +28,6 @@ function main () {
 
     # Remove redundant files
     rm -f src/interfaces/IERC20.sol
-    rm -f src/interfaces/ITIPAccountRegistrar.sol
 
     # Format the code
     forge fmt
