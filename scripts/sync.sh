@@ -22,8 +22,8 @@ function main () {
     log $GREEN "Syncing specifications"
 
     # Clone specs repo and copy interface specs
-    git clone --depth 1 git@github.com:tempoxyz/docs.git specs
-    cp -r specs/specs/src/interfaces src
+    git clone --depth 1 git@github.com:tempoxyz/tempo.git specs
+    cp -r specs/docs/specs/src/interfaces src
     rm -rf specs
 
     # Remove redundant files
