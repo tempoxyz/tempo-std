@@ -53,6 +53,13 @@ src
 └──  <a href="./src/StdContracts.sol">StdContracts.sol</a>: Collection of predeployed contracts and their interfaces on Tempo
 </pre>
 
+## Standard Tokens
+
+<pre>
+src
+└── <a href="./src/StdTokens.sol">StdTokens.sol</a>: Collection of tokens and their interfaces on Tempo
+</pre>
+
 ## Support
 
 The current minimum supported Solidity version is `0.8.13`.
