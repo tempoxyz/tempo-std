@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 import {IAccountKeychain} from "./interfaces/IAccountKeychain.sol";
 import {IFeeManager} from "./interfaces/IFeeManager.sol";
-import {ITIP20} from "./interfaces/ITIP20.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {ITIP20RewardsRegistry} from "./interfaces/ITIP20RewardsRegistry.sol";
@@ -24,9 +23,6 @@ library StdPrecompiles {
     address internal constant VALIDATOR_CONFIG_ADDRESS = 0xCccCcCCC00000000000000000000000000000000;
     address internal constant ACCOUNT_KEYCHAIN_ADDRESS = 0xaAAAaaAA00000000000000000000000000000000;
 
-    address internal constant PATH_USD_ADDRESS = 0x20C0000000000000000000000000000000000000;
-    address internal constant DEFAULT_FEE_TOKEN_ADDRESS = PATH_USD_ADDRESS;
-
     IFeeManager internal constant TIP_FEE_MANAGER = IFeeManager(TIP_FEE_MANAGER_ADDRESS);
     ITIP403Registry internal constant TIP403_REGISTRY = ITIP403Registry(TIP403_REGISTRY_ADDRESS);
     ITIP20Factory internal constant TIP20_FACTORY = ITIP20Factory(TIP20_FACTORY_ADDRESS);
@@ -36,7 +32,4 @@ library StdPrecompiles {
     INonce internal constant NONCE_PRECOMPILE = INonce(NONCE_ADDRESS);
     IValidatorConfig internal constant VALIDATOR_CONFIG = IValidatorConfig(VALIDATOR_CONFIG_ADDRESS);
     IAccountKeychain internal constant ACCOUNT_KEYCHAIN = IAccountKeychain(ACCOUNT_KEYCHAIN_ADDRESS);
-
-    ITIP20 internal constant PATH_USD = ITIP20(PATH_USD_ADDRESS);
-    ITIP20 internal constant DEFAULT_FEE_TOKEN = ITIP20(DEFAULT_FEE_TOKEN_ADDRESS);
 }
