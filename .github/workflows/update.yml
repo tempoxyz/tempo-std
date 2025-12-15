@@ -1,0 +1,48 @@
+name: update
+
+on:
+  schedule:
+    # Nightly at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run sync
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x scripts/sync.sh
+          scripts/sync.sh
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore: interface update"
+          title: "chore: interface update"
+          body: |
+            Automated nightly sync via `scripts/sync.sh`.
+
+            - Trigger: scheduled workflow
+            - Notes: PR is only created when there are file changes.
+          branch: chore/nightly-sync
+          delete-branch: true
