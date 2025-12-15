@@ -1,4 +1,4 @@
-name: Sync Release Branch
+name: Sync major version tag
 
 permissions: {}
 
