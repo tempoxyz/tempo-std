@@ -35,13 +35,15 @@ interface ITIP20Factory {
     /// @param symbol The symbol for the new token
     /// @param currency The currency identifier for the new token
     /// @param admin The address to be assigned as the admin of the new token
+    /// @param salt The salt used for deterministic deployment
     /// @return The address of the newly created token contract
     function createToken(
         string memory name,
         string memory symbol,
         string memory currency,
         ITIP20 quoteToken,
-        address admin
+        address admin,
+        bytes32 salt
     ) external returns (address);
 
     /// @notice Checks if a given address is a TIP-20 compliant token
