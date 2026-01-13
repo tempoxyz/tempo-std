@@ -201,22 +201,22 @@ library TempoTransactionLib {
     function encode(TempoTransaction memory self, VmRlp vm) internal pure returns (bytes memory) {
         bytes[] memory fields = new bytes[](14);
 
-        fields[0] = TxRlp.encodeUint(self.chainId);
-        fields[1] = TxRlp.encodeUint(self.maxPriorityFeePerGas);
-        fields[2] = TxRlp.encodeUint(self.maxFeePerGas);
-        fields[3] = TxRlp.encodeUint(self.gasLimit);
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
         fields[4] = encodeCalls(vm, self.calls);
         fields[5] = encodeAccessList(vm, self.accessList);
-        fields[6] = TxRlp.encodeUint(self.nonceKey);
-        fields[7] = TxRlp.encodeUint(self.nonce);
-        fields[8] = self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone();
-        fields[9] = self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone();
-        fields[10] = self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone();
-        fields[11] = self.hasFeePayerSignature ? self.feePayerSignature : TxRlp.encodeNone();
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
+        fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[8] = self.hasValidBefore ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore)) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[9] = self.hasValidAfter ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter)) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[10] = self.hasFeeToken ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken)) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[11] = self.hasFeePayerSignature ? TxRlp.encodeString(self.feePayerSignature) : TxRlp.encodeString(TxRlp.encodeNone());
         fields[12] = encodeAuthorizationList(vm, self.authorizationList);
-        fields[13] = self.hasKeyAuthorization ? self.keyAuthorization : TxRlp.encodeNone();
+        fields[13] = self.hasKeyAuthorization ? TxRlp.encodeString(self.keyAuthorization) : TxRlp.encodeString(TxRlp.encodeNone());
 
-        bytes memory rlpPayload = TxRlp.encodeList(vm, fields);
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
         return abi.encodePacked(bytes1(0x76), rlpPayload);
     }
 
@@ -228,70 +228,70 @@ library TempoTransactionLib {
     {
         bytes[] memory fields = new bytes[](17);
 
-        fields[0] = TxRlp.encodeUint(self.chainId);
-        fields[1] = TxRlp.encodeUint(self.maxPriorityFeePerGas);
-        fields[2] = TxRlp.encodeUint(self.maxFeePerGas);
-        fields[3] = TxRlp.encodeUint(self.gasLimit);
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
         fields[4] = encodeCalls(vm, self.calls);
         fields[5] = encodeAccessList(vm, self.accessList);
-        fields[6] = TxRlp.encodeUint(self.nonceKey);
-        fields[7] = TxRlp.encodeUint(self.nonce);
-        fields[8] = self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone();
-        fields[9] = self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone();
-        fields[10] = self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone();
-        fields[11] = self.hasFeePayerSignature ? self.feePayerSignature : TxRlp.encodeNone();
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
+        fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[8] = self.hasValidBefore ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore)) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[9] = self.hasValidAfter ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter)) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[10] = self.hasFeeToken ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken)) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[11] = self.hasFeePayerSignature ? TxRlp.encodeString(self.feePayerSignature) : TxRlp.encodeString(TxRlp.encodeNone());
         fields[12] = encodeAuthorizationList(vm, self.authorizationList);
-        fields[13] = self.hasKeyAuthorization ? self.keyAuthorization : TxRlp.encodeNone();
-        fields[14] = TxRlp.encodeUint(v);
-        fields[15] = TxRlp.encodeBytes32(r);
-        fields[16] = TxRlp.encodeBytes32(s);
+        fields[13] = self.hasKeyAuthorization ? TxRlp.encodeString(self.keyAuthorization) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[14] = TxRlp.encodeString(TxRlp.encodeUint(v));
+        fields[15] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
+        fields[16] = TxRlp.encodeString(TxRlp.encodeBytes32(s));
 
-        bytes memory rlpPayload = TxRlp.encodeList(vm, fields);
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
         return abi.encodePacked(bytes1(0x76), rlpPayload);
     }
 
     /// @notice Encodes the calls array as an RLP list.
-    function encodeCalls(VmRlp vm, TempoCall[] memory calls) internal pure returns (bytes memory) {
+    function encodeCalls(VmRlp, TempoCall[] memory calls) internal pure returns (bytes memory) {
         bytes[] memory encodedCalls = new bytes[](calls.length);
         for (uint256 i = 0; i < calls.length; i++) {
             bytes[] memory callFields = new bytes[](3);
-            callFields[0] = TxRlp.encodeAddress(calls[i].to);
-            callFields[1] = TxRlp.encodeUint(calls[i].value);
-            callFields[2] = calls[i].data;
-            encodedCalls[i] = TxRlp.encodeList(vm, callFields);
+            callFields[0] = TxRlp.encodeString(TxRlp.encodeAddress(calls[i].to));
+            callFields[1] = TxRlp.encodeString(TxRlp.encodeUint(calls[i].value));
+            callFields[2] = TxRlp.encodeString(calls[i].data);
+            encodedCalls[i] = TxRlp.encodeRawList(callFields);
         }
-        return TxRlp.encodeList(vm, encodedCalls);
+        return TxRlp.encodeRawList(encodedCalls);
     }
 
     /// @notice Encodes the access list as an RLP list.
-    function encodeAccessList(VmRlp vm, AccessListItem[] memory list) internal pure returns (bytes memory) {
+    function encodeAccessList(VmRlp, AccessListItem[] memory list) internal pure returns (bytes memory) {
         bytes[] memory encodedItems = new bytes[](list.length);
         for (uint256 i = 0; i < list.length; i++) {
             bytes[] memory keys = new bytes[](list[i].storageKeys.length);
             for (uint256 j = 0; j < list[i].storageKeys.length; j++) {
-                keys[j] = TxRlp.encodeBytes32Full(list[i].storageKeys[j]);
+                keys[j] = TxRlp.encodeString(TxRlp.encodeBytes32Full(list[i].storageKeys[j]));
             }
             bytes[] memory itemFields = new bytes[](2);
-            itemFields[0] = TxRlp.encodeAddress(list[i].target);
-            itemFields[1] = TxRlp.encodeList(vm, keys);
-            encodedItems[i] = TxRlp.encodeList(vm, itemFields);
+            itemFields[0] = TxRlp.encodeString(TxRlp.encodeAddress(list[i].target));
+            itemFields[1] = TxRlp.encodeRawList(keys);
+            encodedItems[i] = TxRlp.encodeRawList(itemFields);
         }
-        return TxRlp.encodeList(vm, encodedItems);
+        return TxRlp.encodeRawList(encodedItems);
     }
 
     /// @notice Encodes the authorization list as an RLP list.
-    function encodeAuthorizationList(VmRlp vm, TempoAuthorization[] memory list) internal pure returns (bytes memory) {
+    function encodeAuthorizationList(VmRlp, TempoAuthorization[] memory list) internal pure returns (bytes memory) {
         bytes[] memory encodedAuths = new bytes[](list.length);
         for (uint256 i = 0; i < list.length; i++) {
             bytes[] memory authFields = new bytes[](6);
-            authFields[0] = TxRlp.encodeUint(list[i].chainId);
-            authFields[1] = TxRlp.encodeAddress(list[i].authority);
-            authFields[2] = TxRlp.encodeUint(list[i].nonce);
-            authFields[3] = TxRlp.encodeUint(list[i].yParity);
-            authFields[4] = TxRlp.encodeBytes32(list[i].r);
-            authFields[5] = TxRlp.encodeBytes32(list[i].s);
-            encodedAuths[i] = TxRlp.encodeList(vm, authFields);
+            authFields[0] = TxRlp.encodeString(TxRlp.encodeUint(list[i].chainId));
+            authFields[1] = TxRlp.encodeString(TxRlp.encodeAddress(list[i].authority));
+            authFields[2] = TxRlp.encodeString(TxRlp.encodeUint(list[i].nonce));
+            authFields[3] = TxRlp.encodeString(TxRlp.encodeUint(list[i].yParity));
+            authFields[4] = TxRlp.encodeString(TxRlp.encodeBytes32(list[i].r));
+            authFields[5] = TxRlp.encodeString(TxRlp.encodeBytes32(list[i].s));
+            encodedAuths[i] = TxRlp.encodeRawList(authFields);
         }
-        return TxRlp.encodeList(vm, encodedAuths);
+        return TxRlp.encodeRawList(encodedAuths);
     }
 }
