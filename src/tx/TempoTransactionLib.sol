@@ -209,12 +209,22 @@ library TempoTransactionLib {
         fields[5] = encodeAccessList(vm, self.accessList);
         fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
         fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
-        fields[8] = self.hasValidBefore ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore)) : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[9] = self.hasValidAfter ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter)) : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[10] = self.hasFeeToken ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken)) : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[11] = self.hasFeePayerSignature ? TxRlp.encodeString(self.feePayerSignature) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[8] = self.hasValidBefore
+            ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore))
+            : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[9] = self.hasValidAfter
+            ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter))
+            : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[10] = self.hasFeeToken
+            ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken))
+            : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[11] = self.hasFeePayerSignature
+            ? TxRlp.encodeString(self.feePayerSignature)
+            : TxRlp.encodeString(TxRlp.encodeNone());
         fields[12] = encodeAuthorizationList(vm, self.authorizationList);
-        fields[13] = self.hasKeyAuthorization ? TxRlp.encodeString(self.keyAuthorization) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[13] = self.hasKeyAuthorization
+            ? TxRlp.encodeString(self.keyAuthorization)
+            : TxRlp.encodeString(TxRlp.encodeNone());
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
         return abi.encodePacked(bytes1(0x76), rlpPayload);
@@ -236,12 +246,22 @@ library TempoTransactionLib {
         fields[5] = encodeAccessList(vm, self.accessList);
         fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
         fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
-        fields[8] = self.hasValidBefore ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore)) : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[9] = self.hasValidAfter ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter)) : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[10] = self.hasFeeToken ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken)) : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[11] = self.hasFeePayerSignature ? TxRlp.encodeString(self.feePayerSignature) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[8] = self.hasValidBefore
+            ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore))
+            : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[9] = self.hasValidAfter
+            ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter))
+            : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[10] = self.hasFeeToken
+            ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken))
+            : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[11] = self.hasFeePayerSignature
+            ? TxRlp.encodeString(self.feePayerSignature)
+            : TxRlp.encodeString(TxRlp.encodeNone());
         fields[12] = encodeAuthorizationList(vm, self.authorizationList);
-        fields[13] = self.hasKeyAuthorization ? TxRlp.encodeString(self.keyAuthorization) : TxRlp.encodeString(TxRlp.encodeNone());
+        fields[13] = self.hasKeyAuthorization
+            ? TxRlp.encodeString(self.keyAuthorization)
+            : TxRlp.encodeString(TxRlp.encodeNone());
         fields[14] = TxRlp.encodeString(TxRlp.encodeUint(v));
         fields[15] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
         fields[16] = TxRlp.encodeString(TxRlp.encodeBytes32(s));
