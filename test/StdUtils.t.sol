@@ -7,14 +7,14 @@ import {StdTokens} from "../src/StdTokens.sol";
 
 contract StdUtilsTest is Test {
     function test_knownTokens_haveTIP20Prefix() public pure {
-        assertTrue(StdUtils.isTIP20Prefix(StdTokens.PATH_USD_ADDRESS));
-        assertTrue(StdUtils.isTIP20Prefix(StdTokens.ALPHA_USD_ADDRESS));
-        assertTrue(StdUtils.isTIP20Prefix(StdTokens.BETA_USD_ADDRESS));
-        assertTrue(StdUtils.isTIP20Prefix(StdTokens.THETA_USD_ADDRESS));
+        assertTrue(StdUtils.hasTIP20Prefix(StdTokens.PATH_USD_ADDRESS));
+        assertTrue(StdUtils.hasTIP20Prefix(StdTokens.ALPHA_USD_ADDRESS));
+        assertTrue(StdUtils.hasTIP20Prefix(StdTokens.BETA_USD_ADDRESS));
+        assertTrue(StdUtils.hasTIP20Prefix(StdTokens.THETA_USD_ADDRESS));
     }
 
-    function testFuzz_isTIP20Prefix(address token) public pure {
+    function testFuzz_hasTIP20Prefix(address token) public pure {
         bool expected = bytes12(bytes20(token)) == StdUtils.TIP20_TOKEN_PREFIX;
-        assertEq(StdUtils.isTIP20Prefix(token), expected);
+        assertEq(StdUtils.hasTIP20Prefix(token), expected);
     }
 }
