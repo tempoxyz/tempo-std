@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
+import {StdPrecompiles} from "./StdPrecompiles.sol";
 
 /// @title Standard Utils Library for Tempo
 ///
@@ -20,7 +21,14 @@ library StdUtils {
         return bytes12(bytes20(token)) == TIP20_TOKEN_PREFIX;
     }
 
-    /// @notice Checks if an address is a TIP20 token created by the factory
+    /// @notice Checks if an address is a TIP20 token created by the default factory
+    /// @param token The address to check
+    /// @return True if the token was created by the factory
+    function isTIP20(address token) internal view returns (bool) {
+        return StdPrecompiles.TIP20_FACTORY.isTIP20(token);
+    }
+
+    /// @notice Checks if an address is a TIP20 token created by a specific factory
     /// @param factory The TIP20 factory address
     /// @param token The address to check
     /// @return True if the token was created by the factory
