@@ -60,6 +60,20 @@ src
 └── <a href="./src/StdTokens.sol">StdTokens.sol</a>: Collection of tokens and their interfaces on Tempo
 </pre>
 
+## Standard Chain
+
+<pre>
+src
+└── <a href="./src/StdChain.sol">StdChain.sol</a>: Chain configuration utilities (chain IDs, RPC URLs) for Tempo networks
+</pre>
+
+## Standard Utils
+
+<pre>
+src
+└── <a href="./src/StdUtils.sol">StdUtils.sol</a>: General utility functions (TIP20 prefix checks, factory validation)
+</pre>
+
 ## Support
 
 The current minimum supported Solidity version is `0.8.13`.
