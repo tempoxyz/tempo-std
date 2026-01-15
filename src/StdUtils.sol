@@ -13,7 +13,7 @@ library StdUtils {
 
     /// @notice Checks if an address has the TIP20 prefix
     /// @dev This only checks the prefix, not whether the token was actually created.
-    ///      Use `isTIP20()` for full validation.
+    ///      Use `isTIP20(address)` for full validation.
     /// @param token The address to check
     /// @return True if the address has the TIP20 prefix
     function hasTIP20Prefix(address token) internal pure returns (bool) {
