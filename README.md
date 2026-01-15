@@ -64,14 +64,14 @@ src
 
 <pre>
 src
-└── <a href="./src/StdChain.sol">StdChain.sol</a>: Chain configuration utilities (chain IDs, RPC URLs) for Tempo networks
+└── <a href="./src/StdChain.sol">StdChain.sol</a>: Chain configuration utilities for Tempo networks
 </pre>
 
 ## Standard Utils
 
 <pre>
 src
-└── <a href="./src/StdUtils.sol">StdUtils.sol</a>: General utility functions (TIP20 prefix checks, factory validation)
+└── <a href="./src/StdUtils.sol">StdUtils.sol</a>: General utility functions
 </pre>
 
 ## Support
