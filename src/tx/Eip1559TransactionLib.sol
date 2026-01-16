@@ -42,11 +42,7 @@ library Eip1559TransactionLib {
     }
 
     /// @notice Sets the nonce.
-    function withNonce(Eip1559Transaction memory self, uint64 nonce)
-        internal
-        pure
-        returns (Eip1559Transaction memory)
-    {
+    function withNonce(Eip1559Transaction memory self, uint64 nonce) internal pure returns (Eip1559Transaction memory) {
         self.nonce = nonce;
         return self;
     }
@@ -154,7 +150,7 @@ library Eip1559TransactionLib {
         fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.value));
         fields[7] = TxRlp.encodeString(self.data);
         fields[8] = _encodeAccessList(self.accessList);
-        
+
         // yParity: 0 or 1 (v - 27)
         uint8 yParity = v >= 27 ? v - 27 : v;
         fields[9] = TxRlp.encodeString(TxRlp.encodeUint(yParity));

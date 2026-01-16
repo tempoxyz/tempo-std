@@ -216,26 +216,26 @@ library TempoTransactionLib {
         fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
         fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
         fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
-        
+
         // Nested lists: already fully RLP encoded, pass directly
         fields[4] = _encodeCalls(self.calls);
         fields[5] = _encodeAccessList(self.accessList);
-        
+
         // More scalar fields
         fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
         fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
         fields[8] = TxRlp.encodeString(self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone());
         fields[9] = TxRlp.encodeString(self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone());
         fields[10] = TxRlp.encodeString(self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone());
-        
+
         // Fee payer signature: encoded as RLP list [v, r, s] if present, else 0x80
-        fields[11] = self.hasFeePayerSignature 
+        fields[11] = self.hasFeePayerSignature
             ? _encodeFeePayerSignature(self.feePayerSignature)
             : TxRlp.encodeString(TxRlp.encodeNone());
-        
+
         // Authorization list (always present, can be empty)
         fields[12] = _encodeAuthorizationList(self.authorizationList);
-        
+
         // Key authorization is truly optional (no bytes if not present)
         if (self.hasKeyAuthorization) {
             fields[13] = TxRlp.encodeString(self.keyAuthorization);
@@ -270,11 +270,11 @@ library TempoTransactionLib {
         fields[8] = TxRlp.encodeString(self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone());
         fields[9] = TxRlp.encodeString(self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone());
         fields[10] = TxRlp.encodeString(self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone());
-        fields[11] = self.hasFeePayerSignature 
+        fields[11] = self.hasFeePayerSignature
             ? _encodeFeePayerSignature(self.feePayerSignature)
             : TxRlp.encodeString(TxRlp.encodeNone());
         fields[12] = _encodeAuthorizationList(self.authorizationList);
-        
+
         uint256 sigFieldIdx;
         if (self.hasKeyAuthorization) {
             fields[13] = TxRlp.encodeString(self.keyAuthorization);
@@ -282,7 +282,7 @@ library TempoTransactionLib {
         } else {
             sigFieldIdx = 13;
         }
-        
+
         // Signature field: 65 bytes (r || s || v) encoded as RLP bytes string
         // Note: For secp256k1, the format is r (32 bytes) || s (32 bytes) || v (1 byte)
         bytes memory sigBytes = abi.encodePacked(r, s, v);
@@ -351,7 +351,7 @@ library TempoTransactionLib {
     /// @notice Encodes fee payer signature as RLP list [v, r, s]
     function _encodeFeePayerSignature(bytes memory sig) private pure returns (bytes memory) {
         require(sig.length == 65, "Invalid fee payer signature length");
-        
+
         // Parse signature: first 32 bytes = r, next 32 = s, last byte = v
         bytes32 r;
         bytes32 s;
@@ -361,7 +361,7 @@ library TempoTransactionLib {
             s := mload(add(sig, 64))
             v := byte(0, mload(add(sig, 96)))
         }
-        
+
         // Encode as RLP list [r, s, v] matching Rust's write_rlp_vrs order
         bytes[] memory sigFields = new bytes[](3);
         sigFields[0] = TxRlp.encodeString(TxRlp.encodeBytes32(r));

@@ -56,11 +56,7 @@ library Eip7702TransactionLib {
     }
 
     /// @notice Sets the nonce.
-    function withNonce(Eip7702Transaction memory self, uint64 nonce)
-        internal
-        pure
-        returns (Eip7702Transaction memory)
-    {
+    function withNonce(Eip7702Transaction memory self, uint64 nonce) internal pure returns (Eip7702Transaction memory) {
         self.nonce = nonce;
         return self;
     }
@@ -180,7 +176,7 @@ library Eip7702TransactionLib {
         fields[7] = TxRlp.encodeString(self.data);
         fields[8] = _encodeAccessList(self.accessList);
         fields[9] = _encodeAuthorizationList(self.authorizationList);
-        
+
         uint8 yParity = v >= 27 ? v - 27 : v;
         fields[10] = TxRlp.encodeString(TxRlp.encodeUint(yParity));
         fields[11] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
