@@ -5,7 +5,7 @@ import {VmRlp} from "../StdVm.sol";
 import {TxRlp} from "./TxRlp.sol";
 import {AccessListItem} from "./AccessListTypes.sol";
 
-/// @notice An EIP-1559 (type 2) transaction.
+/// @notice An EIP-1559 (type 2) Ethereum transaction.
 struct Eip1559Transaction {
     uint64 chainId;
     uint64 nonce;
@@ -18,7 +18,7 @@ struct Eip1559Transaction {
     AccessListItem[] accessList;
 }
 
-/// @title Builder and RLP encoder for EIP-1559 transactions.
+/// @title Builder and RLP encoder for EIP-1559 transactions (type 0x02).
 library Eip1559TransactionLib {
     using Eip1559TransactionLib for Eip1559Transaction;
 
@@ -26,7 +26,8 @@ library Eip1559TransactionLib {
     uint8 internal constant TX_TYPE = 0x02;
 
     /// @notice Creates a new EIP-1559 transaction with default values.
-    function create() internal pure returns (Eip1559Transaction memory tx_) {
+    function create() internal view returns (Eip1559Transaction memory tx_) {
+        tx_.chainId = uint64(block.chainid);
         tx_.gasLimit = 21000;
     }
 
@@ -82,7 +83,7 @@ library Eip1559TransactionLib {
         return self;
     }
 
-    /// @notice Sets the value to transfer.
+    /// @notice Sets the value to send.
     function withValue(Eip1559Transaction memory self, uint256 value)
         internal
         pure
@@ -92,7 +93,7 @@ library Eip1559TransactionLib {
         return self;
     }
 
-    /// @notice Sets the call data.
+    /// @notice Sets the calldata.
     function withData(Eip1559Transaction memory self, bytes memory data)
         internal
         pure
@@ -112,71 +113,69 @@ library Eip1559TransactionLib {
         return self;
     }
 
-    /// @notice RLP encodes the unsigned transaction with type prefix.
+    /// @notice RLP encodes the unsigned transaction with type prefix 0x02.
     /// @dev Format: 0x02 || RLP([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList])
-    function encode(Eip1559Transaction memory self, VmRlp vm) internal pure returns (bytes memory) {
+    function encode(Eip1559Transaction memory self, VmRlp) internal pure returns (bytes memory) {
         bytes[] memory fields = new bytes[](9);
-        fields[0] = TxRlp.encodeUint(self.chainId);
-        fields[1] = TxRlp.encodeUint(self.nonce);
-        fields[2] = TxRlp.encodeUint(self.maxPriorityFeePerGas);
-        fields[3] = TxRlp.encodeUint(self.maxFeePerGas);
-        fields[4] = TxRlp.encodeUint(self.gasLimit);
-        fields[5] = TxRlp.encodeAddress(self.to);
-        fields[6] = TxRlp.encodeUint(self.value);
-        fields[7] = self.data;
-        fields[8] = encodeAccessList(vm, self.accessList);
 
-        bytes memory rlpPayload = TxRlp.encodeList(vm, fields);
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[4] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
+        fields[5] = TxRlp.encodeString(self.to == address(0) ? TxRlp.encodeNone() : TxRlp.encodeAddress(self.to));
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.value));
+        fields[7] = TxRlp.encodeString(self.data);
+        fields[8] = _encodeAccessList(self.accessList);
+
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
         return abi.encodePacked(TX_TYPE, rlpPayload);
     }
 
-    /// @notice RLP encodes the signed transaction with type prefix.
+    /// @notice RLP encodes the signed transaction with type prefix 0x02.
     /// @dev Format: 0x02 || RLP([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList, yParity, r, s])
-    function encodeWithSignature(Eip1559Transaction memory self, VmRlp vm, uint8 yParity, bytes32 r, bytes32 s)
+    function encodeWithSignature(Eip1559Transaction memory self, VmRlp, uint8 v, bytes32 r, bytes32 s)
         internal
         pure
         returns (bytes memory)
     {
         bytes[] memory fields = new bytes[](12);
-        fields[0] = TxRlp.encodeUint(self.chainId);
-        fields[1] = TxRlp.encodeUint(self.nonce);
-        fields[2] = TxRlp.encodeUint(self.maxPriorityFeePerGas);
-        fields[3] = TxRlp.encodeUint(self.maxFeePerGas);
-        fields[4] = TxRlp.encodeUint(self.gasLimit);
-        fields[5] = TxRlp.encodeAddress(self.to);
-        fields[6] = TxRlp.encodeUint(self.value);
-        fields[7] = self.data;
-        fields[8] = encodeAccessList(vm, self.accessList);
-        fields[9] = TxRlp.encodeUint(yParity);
-        fields[10] = TxRlp.encodeBytes32(r);
-        fields[11] = TxRlp.encodeBytes32(s);
 
-        bytes memory rlpPayload = TxRlp.encodeList(vm, fields);
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[4] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
+        fields[5] = TxRlp.encodeString(self.to == address(0) ? TxRlp.encodeNone() : TxRlp.encodeAddress(self.to));
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.value));
+        fields[7] = TxRlp.encodeString(self.data);
+        fields[8] = _encodeAccessList(self.accessList);
+
+        // yParity: 0 or 1 (v - 27)
+        uint8 yParity = v >= 27 ? v - 27 : v;
+        fields[9] = TxRlp.encodeString(TxRlp.encodeUint(yParity));
+        fields[10] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
+        fields[11] = TxRlp.encodeString(TxRlp.encodeBytes32(s));
+
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
         return abi.encodePacked(TX_TYPE, rlpPayload);
     }
 
-    /// @notice Encodes an access list as RLP.
-    /// @dev Each item is encoded as [address, [storageKey1, storageKey2, ...]].
-    function encodeAccessList(VmRlp vm, AccessListItem[] memory list) internal pure returns (bytes memory) {
+    /// @notice Encodes the access list as an RLP list.
+    function _encodeAccessList(AccessListItem[] memory list) private pure returns (bytes memory) {
         bytes[] memory encodedItems = new bytes[](list.length);
-
         for (uint256 i = 0; i < list.length; i++) {
-            AccessListItem memory item = list[i];
-
-            // Encode storage keys as a list
-            bytes[] memory encodedKeys = new bytes[](item.storageKeys.length);
-            for (uint256 j = 0; j < item.storageKeys.length; j++) {
-                encodedKeys[j] = TxRlp.encodeBytes32Full(item.storageKeys[j]);
+            bytes[] memory keys = new bytes[](list[i].storageKeys.length);
+            for (uint256 j = 0; j < list[i].storageKeys.length; j++) {
+                keys[j] = TxRlp.encodeString(TxRlp.encodeBytes32Full(list[i].storageKeys[j]));
             }
-            bytes memory keysList = TxRlp.encodeList(vm, encodedKeys);
+            bytes memory keysList = TxRlp.encodeRawList(keys);
 
-            // Encode [address, [keys...]]
-            bytes[] memory tuple = new bytes[](2);
-            tuple[0] = TxRlp.encodeAddress(item.target);
-            tuple[1] = keysList;
-            encodedItems[i] = TxRlp.encodeList(vm, tuple);
+            bytes[] memory itemFields = new bytes[](2);
+            itemFields[0] = TxRlp.encodeString(TxRlp.encodeAddress(list[i].target));
+            itemFields[1] = keysList;
+            encodedItems[i] = TxRlp.encodeRawList(itemFields);
         }
-
-        return TxRlp.encodeList(vm, encodedItems);
+        return TxRlp.encodeRawList(encodedItems);
     }
 }
