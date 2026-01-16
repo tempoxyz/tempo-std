@@ -22,6 +22,8 @@ library TxRlp {
 
         bytes memory result = new bytes(len);
         for (uint256 i = len; i > 0; i--) {
+            // Intentional truncation: extracting lowest byte
+            // forge-lint: disable-next-line(unsafe-typecast)
             result[i - 1] = bytes1(uint8(value));
             value >>= 8;
         }
@@ -60,10 +62,10 @@ library TxRlp {
         if (len == 1 && uint8(str[0]) < 0x80) {
             return str;
         } else if (len <= 55) {
-            return abi.encodePacked(bytes1(uint8(0x80 + len)), str);
+            return abi.encodePacked(bytes1(uint8((0x80 + len) & 0xff)), str);
         } else {
             bytes memory lenBytes = encodeLength(len);
-            return abi.encodePacked(bytes1(uint8(0xb7 + lenBytes.length)), lenBytes, str);
+            return abi.encodePacked(bytes1(uint8((0xb7 + lenBytes.length) & 0xff)), lenBytes, str);
         }
     }
 
@@ -90,10 +92,10 @@ library TxRlp {
     function prependListPrefix(bytes memory payload) internal pure returns (bytes memory) {
         uint256 len = payload.length;
         if (len <= 55) {
-            return abi.encodePacked(bytes1(uint8(0xc0 + len)), payload);
+            return abi.encodePacked(bytes1(uint8((0xc0 + len) & 0xff)), payload);
         } else {
             bytes memory lenBytes = encodeLength(len);
-            return abi.encodePacked(bytes1(uint8(0xf7 + lenBytes.length)), lenBytes, payload);
+            return abi.encodePacked(bytes1(uint8((0xf7 + lenBytes.length) & 0xff)), lenBytes, payload);
         }
     }
 
@@ -112,6 +114,8 @@ library TxRlp {
 
         bytes memory result = new bytes(numBytes);
         for (uint256 i = numBytes; i > 0; i--) {
+            // Intentional truncation: extracting lowest byte
+            // forge-lint: disable-next-line(unsafe-typecast)
             result[i - 1] = bytes1(uint8(len));
             len >>= 8;
         }
