@@ -60,13 +60,6 @@ src
 └── <a href="./src/StdTokens.sol">StdTokens.sol</a>: Collection of tokens and their interfaces on Tempo
 </pre>
 
-## Standard Chain
-
-<pre>
-src
-└── <a href="./src/StdChain.sol">StdChain.sol</a>: Chain configuration utilities for Tempo networks
-</pre>
-
 ## Standard Utils
 
 <pre>
