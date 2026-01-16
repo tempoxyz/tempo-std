@@ -5,24 +5,17 @@ import {VmRlp} from "../StdVm.sol";
 import {TxRlp} from "./TxRlp.sol";
 import {AccessListItem} from "./AccessListTypes.sol";
 
-/// @notice Unsigned EIP-7702 authorization tuple.
-struct Authorization {
-    uint64 chainId;
-    address authority;
-    uint64 nonce;
-}
-
-/// @notice Signed EIP-7702 authorization tuple.
-struct SignedAuthorization {
-    uint64 chainId;
-    address authority;
+/// @notice An EIP-7702 authorization tuple.
+struct Eip7702Authorization {
+    uint256 chainId;
+    address codeAddress;
     uint64 nonce;
     uint8 yParity;
     bytes32 r;
     bytes32 s;
 }
 
-/// @notice EIP-7702 transaction (type 0x04).
+/// @notice An EIP-7702 (type 4) Ethereum transaction.
 struct Eip7702Transaction {
     uint64 chainId;
     uint64 nonce;
@@ -33,33 +26,23 @@ struct Eip7702Transaction {
     uint256 value;
     bytes data;
     AccessListItem[] accessList;
-    SignedAuthorization[] authorizationList;
+    Eip7702Authorization[] authorizationList;
 }
 
-/// @title Library for encoding unsigned authorizations.
-library AuthorizationLib {
-    /// @notice RLP encodes an unsigned authorization for signing.
-    /// @dev Signing hash is `keccak256(0x05 || encode(auth))`.
-    /// @param self The authorization to encode.
-    /// @param vm The Vm RLP interface.
-    /// @return The RLP-encoded authorization (no type prefix).
-    function encode(Authorization memory self, VmRlp vm) internal pure returns (bytes memory) {
-        bytes[] memory items = new bytes[](3);
-        items[0] = TxRlp.encodeUint(self.chainId);
-        items[1] = TxRlp.encodeAddress(self.authority);
-        items[2] = TxRlp.encodeUint(self.nonce);
-        return TxRlp.encodeList(vm, items);
-    }
-}
-
-/// @title Library for building and RLP-encoding EIP-7702 transactions.
+/// @title Builder and RLP encoder for EIP-7702 transactions (type 0x04).
 library Eip7702TransactionLib {
+    using Eip7702TransactionLib for Eip7702Transaction;
+
     /// @notice EIP-7702 transaction type prefix.
-    bytes1 internal constant TYPE_PREFIX = 0x04;
+    uint8 internal constant TX_TYPE = 0x04;
+
+    /// @notice EIP-7702 authorization magic for signing.
+    uint8 internal constant AUTH_MAGIC = 0x05;
 
     /// @notice Creates a new EIP-7702 transaction with default values.
-    function create() internal pure returns (Eip7702Transaction memory t) {
-        t.gasLimit = 21000;
+    function create() internal view returns (Eip7702Transaction memory tx_) {
+        tx_.chainId = uint64(block.chainid);
+        tx_.gasLimit = 21000;
     }
 
     /// @notice Sets the chain ID.
@@ -73,7 +56,11 @@ library Eip7702TransactionLib {
     }
 
     /// @notice Sets the nonce.
-    function withNonce(Eip7702Transaction memory self, uint64 nonce) internal pure returns (Eip7702Transaction memory) {
+    function withNonce(Eip7702Transaction memory self, uint64 nonce)
+        internal
+        pure
+        returns (Eip7702Transaction memory)
+    {
         self.nonce = nonce;
         return self;
     }
@@ -108,13 +95,13 @@ library Eip7702TransactionLib {
         return self;
     }
 
-    /// @notice Sets the destination address.
+    /// @notice Sets the recipient address.
     function withTo(Eip7702Transaction memory self, address to) internal pure returns (Eip7702Transaction memory) {
         self.to = to;
         return self;
     }
 
-    /// @notice Sets the value in wei.
+    /// @notice Sets the value to send.
     function withValue(Eip7702Transaction memory self, uint256 value)
         internal
         pure
@@ -145,7 +132,7 @@ library Eip7702TransactionLib {
     }
 
     /// @notice Sets the authorization list.
-    function withAuthorizationList(Eip7702Transaction memory self, SignedAuthorization[] memory authorizationList)
+    function withAuthorizationList(Eip7702Transaction memory self, Eip7702Authorization[] memory authorizationList)
         internal
         pure
         returns (Eip7702Transaction memory)
@@ -154,86 +141,102 @@ library Eip7702TransactionLib {
         return self;
     }
 
-    /// @notice RLP encodes the unsigned transaction with type prefix.
-    /// @param self The transaction to encode.
-    /// @param vm The Vm RLP interface.
-    /// @return The encoded transaction: `0x04 || RLP([fields...])`.
-    function encode(Eip7702Transaction memory self, VmRlp vm) internal pure returns (bytes memory) {
-        bytes[] memory items = new bytes[](10);
-        items[0] = TxRlp.encodeUint(self.chainId);
-        items[1] = TxRlp.encodeUint(self.nonce);
-        items[2] = TxRlp.encodeUint(self.maxPriorityFeePerGas);
-        items[3] = TxRlp.encodeUint(self.maxFeePerGas);
-        items[4] = TxRlp.encodeUint(self.gasLimit);
-        items[5] = TxRlp.encodeAddress(self.to);
-        items[6] = TxRlp.encodeUint(self.value);
-        items[7] = self.data;
-        items[8] = encodeAccessList(vm, self.accessList);
-        items[9] = encodeAuthorizationList(vm, self.authorizationList);
+    /// @notice RLP encodes the unsigned transaction with type prefix 0x04.
+    /// @dev Format: 0x04 || RLP([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList, authorizationList])
+    function encode(Eip7702Transaction memory self, VmRlp) internal pure returns (bytes memory) {
+        bytes[] memory fields = new bytes[](10);
 
-        return abi.encodePacked(TYPE_PREFIX, TxRlp.encodeList(vm, items));
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[4] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
+        fields[5] = TxRlp.encodeString(self.to == address(0) ? TxRlp.encodeNone() : TxRlp.encodeAddress(self.to));
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.value));
+        fields[7] = TxRlp.encodeString(self.data);
+        fields[8] = _encodeAccessList(self.accessList);
+        fields[9] = _encodeAuthorizationList(self.authorizationList);
+
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
+        return abi.encodePacked(TX_TYPE, rlpPayload);
     }
 
-    /// @notice RLP encodes the signed transaction with type prefix.
-    /// @param self The transaction to encode.
-    /// @param vm The Vm RLP interface.
-    /// @param yParity The signature y-parity (0 or 1).
-    /// @param r The signature r value.
-    /// @param s The signature s value.
-    /// @return The encoded transaction: `0x04 || RLP([fields..., yParity, r, s])`.
-    function encodeWithSignature(Eip7702Transaction memory self, VmRlp vm, uint8 yParity, bytes32 r, bytes32 s)
+    /// @notice RLP encodes the signed transaction with type prefix 0x04.
+    /// @dev Format: 0x04 || RLP([chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList, authorizationList, yParity, r, s])
+    function encodeWithSignature(Eip7702Transaction memory self, VmRlp, uint8 v, bytes32 r, bytes32 s)
         internal
         pure
         returns (bytes memory)
     {
-        bytes[] memory items = new bytes[](13);
-        items[0] = TxRlp.encodeUint(self.chainId);
-        items[1] = TxRlp.encodeUint(self.nonce);
-        items[2] = TxRlp.encodeUint(self.maxPriorityFeePerGas);
-        items[3] = TxRlp.encodeUint(self.maxFeePerGas);
-        items[4] = TxRlp.encodeUint(self.gasLimit);
-        items[5] = TxRlp.encodeAddress(self.to);
-        items[6] = TxRlp.encodeUint(self.value);
-        items[7] = self.data;
-        items[8] = encodeAccessList(vm, self.accessList);
-        items[9] = encodeAuthorizationList(vm, self.authorizationList);
-        items[10] = TxRlp.encodeUint(yParity);
-        items[11] = TxRlp.encodeBytes32(r);
-        items[12] = TxRlp.encodeBytes32(s);
+        bytes[] memory fields = new bytes[](13);
 
-        return abi.encodePacked(TYPE_PREFIX, TxRlp.encodeList(vm, items));
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[4] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
+        fields[5] = TxRlp.encodeString(self.to == address(0) ? TxRlp.encodeNone() : TxRlp.encodeAddress(self.to));
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.value));
+        fields[7] = TxRlp.encodeString(self.data);
+        fields[8] = _encodeAccessList(self.accessList);
+        fields[9] = _encodeAuthorizationList(self.authorizationList);
+        
+        uint8 yParity = v >= 27 ? v - 27 : v;
+        fields[10] = TxRlp.encodeString(TxRlp.encodeUint(yParity));
+        fields[11] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
+        fields[12] = TxRlp.encodeString(TxRlp.encodeBytes32(s));
+
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
+        return abi.encodePacked(TX_TYPE, rlpPayload);
     }
 
-    /// @notice Encodes an access list as RLP.
-    function encodeAccessList(VmRlp vm, AccessListItem[] memory list) private pure returns (bytes memory) {
+    /// @notice Computes the authorization hash for signing.
+    /// @dev Hash: keccak256(0x05 || RLP([chainId, codeAddress, nonce]))
+    function computeAuthorizationHash(uint256 chainId, address codeAddress, uint64 authNonce)
+        internal
+        pure
+        returns (bytes32)
+    {
+        bytes[] memory fields = new bytes[](3);
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeAddress(codeAddress));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(authNonce));
+
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
+        return keccak256(abi.encodePacked(AUTH_MAGIC, rlpPayload));
+    }
+
+    /// @notice Encodes the access list as an RLP list.
+    function _encodeAccessList(AccessListItem[] memory list) private pure returns (bytes memory) {
         bytes[] memory encodedItems = new bytes[](list.length);
         for (uint256 i = 0; i < list.length; i++) {
             bytes[] memory keys = new bytes[](list[i].storageKeys.length);
             for (uint256 j = 0; j < list[i].storageKeys.length; j++) {
-                keys[j] = TxRlp.encodeBytes32Full(list[i].storageKeys[j]);
+                keys[j] = TxRlp.encodeString(TxRlp.encodeBytes32Full(list[i].storageKeys[j]));
             }
+            bytes memory keysList = TxRlp.encodeRawList(keys);
 
-            bytes[] memory item = new bytes[](2);
-            item[0] = TxRlp.encodeAddress(list[i].target);
-            item[1] = TxRlp.encodeList(vm, keys);
-            encodedItems[i] = TxRlp.encodeList(vm, item);
+            bytes[] memory itemFields = new bytes[](2);
+            itemFields[0] = TxRlp.encodeString(TxRlp.encodeAddress(list[i].target));
+            itemFields[1] = keysList;
+            encodedItems[i] = TxRlp.encodeRawList(itemFields);
         }
-        return TxRlp.encodeList(vm, encodedItems);
+        return TxRlp.encodeRawList(encodedItems);
     }
 
-    /// @notice Encodes an authorization list as RLP.
-    function encodeAuthorizationList(VmRlp vm, SignedAuthorization[] memory list) private pure returns (bytes memory) {
-        bytes[] memory encodedItems = new bytes[](list.length);
+    /// @notice Encodes the authorization list as an RLP list.
+    function _encodeAuthorizationList(Eip7702Authorization[] memory list) private pure returns (bytes memory) {
+        bytes[] memory encodedAuths = new bytes[](list.length);
         for (uint256 i = 0; i < list.length; i++) {
-            bytes[] memory item = new bytes[](6);
-            item[0] = TxRlp.encodeUint(list[i].chainId);
-            item[1] = TxRlp.encodeAddress(list[i].authority);
-            item[2] = TxRlp.encodeUint(list[i].nonce);
-            item[3] = TxRlp.encodeUint(list[i].yParity);
-            item[4] = TxRlp.encodeBytes32(list[i].r);
-            item[5] = TxRlp.encodeBytes32(list[i].s);
-            encodedItems[i] = TxRlp.encodeList(vm, item);
+            bytes[] memory authFields = new bytes[](6);
+            authFields[0] = TxRlp.encodeString(TxRlp.encodeUint(list[i].chainId));
+            authFields[1] = TxRlp.encodeString(TxRlp.encodeAddress(list[i].codeAddress));
+            authFields[2] = TxRlp.encodeString(TxRlp.encodeUint(list[i].nonce));
+            authFields[3] = TxRlp.encodeString(TxRlp.encodeUint(list[i].yParity));
+            authFields[4] = TxRlp.encodeString(TxRlp.encodeBytes32(list[i].r));
+            authFields[5] = TxRlp.encodeString(TxRlp.encodeBytes32(list[i].s));
+            encodedAuths[i] = TxRlp.encodeRawList(authFields);
         }
-        return TxRlp.encodeList(vm, encodedItems);
+        return TxRlp.encodeRawList(encodedAuths);
     }
 }

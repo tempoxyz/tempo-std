@@ -46,7 +46,12 @@ struct TempoTransaction {
 }
 
 /// @title Builder and RLP encoder for Tempo transactions (type 0x76).
+/// @dev Encoding follows the Tempo spec where signed transactions have 15 fields:
+///      14 transaction fields + 1 signature field (65-byte secp256k1: r || s || v)
 library TempoTransactionLib {
+    /// @notice Tempo transaction type prefix.
+    uint8 internal constant TX_TYPE = 0x76;
+
     /// @notice Creates a new Tempo transaction with default values.
     function create() internal pure returns (TempoTransaction memory tx_) {
         tx_.gasLimit = 21000;
@@ -198,84 +203,109 @@ library TempoTransactionLib {
     }
 
     /// @notice RLP encodes the unsigned transaction with type prefix 0x76.
-    function encode(TempoTransaction memory self, VmRlp vm) internal pure returns (bytes memory) {
-        bytes[] memory fields = new bytes[](14);
+    /// @dev Format: 0x76 || RLP([chainId, maxPriorityFeePerGas, maxFeePerGas, gasLimit, calls, accessList,
+    ///              nonceKey, nonce, validBefore, validAfter, feeToken, feePayerSignature, authorizationList, keyAuthorization])
+    ///      Note: keyAuthorization is truly optional (no bytes if not present)
+    function encode(TempoTransaction memory self, VmRlp) internal pure returns (bytes memory) {
+        // 13 mandatory fields + 1 optional keyAuthorization
+        uint256 fieldCount = self.hasKeyAuthorization ? 14 : 13;
+        bytes[] memory fields = new bytes[](fieldCount);
 
+        // Scalar fields: encode value then wrap with RLP string prefix
         fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
         fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
         fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
         fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
-        fields[4] = encodeCalls(vm, self.calls);
-        fields[5] = encodeAccessList(vm, self.accessList);
+        
+        // Nested lists: already fully RLP encoded, pass directly
+        fields[4] = _encodeCalls(self.calls);
+        fields[5] = _encodeAccessList(self.accessList);
+        
+        // More scalar fields
         fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
         fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
-        fields[8] = self.hasValidBefore
-            ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore))
+        fields[8] = TxRlp.encodeString(self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone());
+        fields[9] = TxRlp.encodeString(self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone());
+        fields[10] = TxRlp.encodeString(self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone());
+        
+        // Fee payer signature: encoded as RLP list [v, r, s] if present, else 0x80
+        fields[11] = self.hasFeePayerSignature 
+            ? _encodeFeePayerSignature(self.feePayerSignature)
             : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[9] = self.hasValidAfter
-            ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter))
-            : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[10] = self.hasFeeToken
-            ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken))
-            : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[11] = self.hasFeePayerSignature
-            ? TxRlp.encodeString(self.feePayerSignature)
-            : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[12] = encodeAuthorizationList(vm, self.authorizationList);
-        fields[13] = self.hasKeyAuthorization
-            ? TxRlp.encodeString(self.keyAuthorization)
-            : TxRlp.encodeString(TxRlp.encodeNone());
+        
+        // Authorization list (always present, can be empty)
+        fields[12] = _encodeAuthorizationList(self.authorizationList);
+        
+        // Key authorization is truly optional (no bytes if not present)
+        if (self.hasKeyAuthorization) {
+            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+        }
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
-        return abi.encodePacked(bytes1(0x76), rlpPayload);
+        return abi.encodePacked(TX_TYPE, rlpPayload);
     }
 
     /// @notice RLP encodes the signed transaction with type prefix 0x76.
-    function encodeWithSignature(TempoTransaction memory self, VmRlp vm, uint8 v, bytes32 r, bytes32 s)
+    /// @dev Format: 0x76 || RLP([...14 fields, signature_bytes])
+    ///      The signature is a 65-byte secp256k1 signature: r (32) || s (32) || v (1)
+    /// @param v The recovery parameter (27 or 28 from vm.sign). Will be stored as-is in the signature bytes.
+    function encodeWithSignature(TempoTransaction memory self, VmRlp, uint8 v, bytes32 r, bytes32 s)
         internal
         pure
         returns (bytes memory)
     {
-        bytes[] memory fields = new bytes[](17);
+        // 13 or 14 tx fields + 1 signature field
+        uint256 fieldCount = self.hasKeyAuthorization ? 15 : 14;
+        bytes[] memory fields = new bytes[](fieldCount);
 
+        // Encode all transaction fields (same as unsigned)
         fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
         fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
         fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
         fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
-        fields[4] = encodeCalls(vm, self.calls);
-        fields[5] = encodeAccessList(vm, self.accessList);
+        fields[4] = _encodeCalls(self.calls);
+        fields[5] = _encodeAccessList(self.accessList);
         fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
         fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
-        fields[8] = self.hasValidBefore
-            ? TxRlp.encodeString(TxRlp.encodeUint(self.validBefore))
+        fields[8] = TxRlp.encodeString(self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone());
+        fields[9] = TxRlp.encodeString(self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone());
+        fields[10] = TxRlp.encodeString(self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone());
+        fields[11] = self.hasFeePayerSignature 
+            ? _encodeFeePayerSignature(self.feePayerSignature)
             : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[9] = self.hasValidAfter
-            ? TxRlp.encodeString(TxRlp.encodeUint(self.validAfter))
-            : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[10] = self.hasFeeToken
-            ? TxRlp.encodeString(TxRlp.encodeAddress(self.feeToken))
-            : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[11] = self.hasFeePayerSignature
-            ? TxRlp.encodeString(self.feePayerSignature)
-            : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[12] = encodeAuthorizationList(vm, self.authorizationList);
-        fields[13] = self.hasKeyAuthorization
-            ? TxRlp.encodeString(self.keyAuthorization)
-            : TxRlp.encodeString(TxRlp.encodeNone());
-        fields[14] = TxRlp.encodeString(TxRlp.encodeUint(v));
-        fields[15] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
-        fields[16] = TxRlp.encodeString(TxRlp.encodeBytes32(s));
+        fields[12] = _encodeAuthorizationList(self.authorizationList);
+        
+        uint256 sigFieldIdx;
+        if (self.hasKeyAuthorization) {
+            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+            sigFieldIdx = 14;
+        } else {
+            sigFieldIdx = 13;
+        }
+        
+        // Signature field: 65 bytes (r || s || v) encoded as RLP bytes string
+        // Note: For secp256k1, the format is r (32 bytes) || s (32 bytes) || v (1 byte)
+        bytes memory sigBytes = abi.encodePacked(r, s, v);
+        fields[sigFieldIdx] = TxRlp.encodeString(sigBytes);
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
-        return abi.encodePacked(bytes1(0x76), rlpPayload);
+        return abi.encodePacked(TX_TYPE, rlpPayload);
     }
 
     /// @notice Encodes the calls array as an RLP list.
-    function encodeCalls(VmRlp, TempoCall[] memory calls) internal pure returns (bytes memory) {
+    /// @dev Each call is encoded as [to, value, data].
+    ///      For CREATE calls (to == address(0)), `to` is encoded as empty string (0x80)
+    ///      to match Rust's TxKind::Create encoding.
+    function _encodeCalls(TempoCall[] memory calls) private pure returns (bytes memory) {
         bytes[] memory encodedCalls = new bytes[](calls.length);
         for (uint256 i = 0; i < calls.length; i++) {
             bytes[] memory callFields = new bytes[](3);
-            callFields[0] = TxRlp.encodeString(TxRlp.encodeAddress(calls[i].to));
+            // CREATE is encoded as empty string, CALL is encoded as 20-byte address
+            if (calls[i].to == address(0)) {
+                callFields[0] = TxRlp.encodeString(TxRlp.encodeNone()); // CREATE: empty string
+            } else {
+                callFields[0] = TxRlp.encodeString(TxRlp.encodeAddress(calls[i].to));
+            }
             callFields[1] = TxRlp.encodeString(TxRlp.encodeUint(calls[i].value));
             callFields[2] = TxRlp.encodeString(calls[i].data);
             encodedCalls[i] = TxRlp.encodeRawList(callFields);
@@ -284,23 +314,26 @@ library TempoTransactionLib {
     }
 
     /// @notice Encodes the access list as an RLP list.
-    function encodeAccessList(VmRlp, AccessListItem[] memory list) internal pure returns (bytes memory) {
+    /// @dev Each item is encoded as [address, [storageKey1, storageKey2, ...]].
+    function _encodeAccessList(AccessListItem[] memory list) private pure returns (bytes memory) {
         bytes[] memory encodedItems = new bytes[](list.length);
         for (uint256 i = 0; i < list.length; i++) {
             bytes[] memory keys = new bytes[](list[i].storageKeys.length);
             for (uint256 j = 0; j < list[i].storageKeys.length; j++) {
                 keys[j] = TxRlp.encodeString(TxRlp.encodeBytes32Full(list[i].storageKeys[j]));
             }
+            bytes memory keysList = TxRlp.encodeRawList(keys);
+
             bytes[] memory itemFields = new bytes[](2);
             itemFields[0] = TxRlp.encodeString(TxRlp.encodeAddress(list[i].target));
-            itemFields[1] = TxRlp.encodeRawList(keys);
+            itemFields[1] = keysList; // Already a fully encoded list
             encodedItems[i] = TxRlp.encodeRawList(itemFields);
         }
         return TxRlp.encodeRawList(encodedItems);
     }
 
     /// @notice Encodes the authorization list as an RLP list.
-    function encodeAuthorizationList(VmRlp, TempoAuthorization[] memory list) internal pure returns (bytes memory) {
+    function _encodeAuthorizationList(TempoAuthorization[] memory list) private pure returns (bytes memory) {
         bytes[] memory encodedAuths = new bytes[](list.length);
         for (uint256 i = 0; i < list.length; i++) {
             bytes[] memory authFields = new bytes[](6);
@@ -313,5 +346,44 @@ library TempoTransactionLib {
             encodedAuths[i] = TxRlp.encodeRawList(authFields);
         }
         return TxRlp.encodeRawList(encodedAuths);
+    }
+
+    /// @notice Encodes fee payer signature as RLP list [v, r, s]
+    function _encodeFeePayerSignature(bytes memory sig) private pure returns (bytes memory) {
+        require(sig.length == 65, "Invalid fee payer signature length");
+        
+        // Parse signature: first 32 bytes = r, next 32 = s, last byte = v
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
+        assembly {
+            r := mload(add(sig, 32))
+            s := mload(add(sig, 64))
+            v := byte(0, mload(add(sig, 96)))
+        }
+        
+        // Encode as RLP list [r, s, v] matching Rust's write_rlp_vrs order
+        bytes[] memory sigFields = new bytes[](3);
+        sigFields[0] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
+        sigFields[1] = TxRlp.encodeString(TxRlp.encodeBytes32(s));
+        sigFields[2] = TxRlp.encodeString(TxRlp.encodeUint(v));
+        return TxRlp.encodeRawList(sigFields);
+    }
+
+    // ============ Legacy function signatures for backwards compatibility ============
+
+    /// @notice Encodes the calls array as an RLP list (legacy signature).
+    function encodeCalls(VmRlp, TempoCall[] memory calls) internal pure returns (bytes memory) {
+        return _encodeCalls(calls);
+    }
+
+    /// @notice Encodes the access list as an RLP list (legacy signature).
+    function encodeAccessList(VmRlp, AccessListItem[] memory list) internal pure returns (bytes memory) {
+        return _encodeAccessList(list);
+    }
+
+    /// @notice Encodes the authorization list as an RLP list (legacy signature).
+    function encodeAuthorizationList(VmRlp, TempoAuthorization[] memory list) internal pure returns (bytes memory) {
+        return _encodeAuthorizationList(list);
     }
 }
