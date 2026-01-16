@@ -60,6 +60,28 @@ src
 └── <a href="./src/StdTokens.sol">StdTokens.sol</a>: Collection of tokens and their interfaces on Tempo
 </pre>
 
+## Standard Vm
+
+<pre>
+src
+└── <a href="./src/StdVm.sol">StdVm.sol</a>: Minimal Vm interfaces for RLP encoding and transaction execution
+</pre>
+
+## Transaction Builders
+
+Solidity libraries for building and RLP-encoding Ethereum and Tempo transactions, useful for testing with Foundry.
+
+<pre>
+src
+└── tx
+    ├── <a href="./src/tx/AccessListTypes.sol">AccessListTypes.sol</a>: EIP-2930 access list types
+    ├── <a href="./src/tx/Eip1559TransactionLib.sol">Eip1559TransactionLib.sol</a>: EIP-1559 (type 2) transaction builder
+    ├── <a href="./src/tx/Eip7702TransactionLib.sol">Eip7702TransactionLib.sol</a>: EIP-7702 (type 4) transaction builder with authorization support
+    ├── <a href="./src/tx/LegacyTransactionLib.sol">LegacyTransactionLib.sol</a>: Legacy (type 0) transaction builder
+    ├── <a href="./src/tx/TempoTransactionLib.sol">TempoTransactionLib.sol</a>: Tempo (type 0x76) transaction builder with batch calls, 2D nonces, and fee payer support
+    └── <a href="./src/tx/TxRlp.sol">TxRlp.sol</a>: RLP encoding helpers for transaction builders
+</pre>
+
 ## Support
 
 The current minimum supported Solidity version is `0.8.13`.
