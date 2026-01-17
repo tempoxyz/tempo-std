@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT OR Apache-2.0
-pragma solidity >=0.8.13 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.13;
 
 /**
  * @title Account Keychain Precompile Interface
@@ -40,7 +40,7 @@ interface IAccountKeychain {
     struct KeyInfo {
         SignatureType signatureType; // Signature type of the key
         address keyId; // The key identifier (address)
-        uint64 expiry; // Unix timestamp when key expires (0 = never)
+        uint64 expiry; // Unix timestamp when key expires (use type(uint64).max for never)
         bool enforceLimits; // Whether spending limits are enforced for this key
         bool isRevoked; // Whether this key has been revoked
     }
@@ -72,6 +72,7 @@ interface IAccountKeychain {
     error SpendingLimitExceeded();
     error InvalidSignatureType();
     error ZeroPublicKey();
+    error ExpiryInPast();
     error UnauthorizedCaller();
 
     /*//////////////////////////////////////////////////////////////
@@ -84,7 +85,7 @@ interface IAccountKeychain {
      *      The protocol enforces this restriction by checking transactionKey[msg.sender]
      * @param keyId The key identifier (address) to authorize
      * @param signatureType Signature type of the key (0: Secp256k1, 1: P256, 2: WebAuthn)
-     * @param expiry Unix timestamp when key expires (0 = never expires)
+     * @param expiry Unix timestamp when key expires (use type(uint64).max for never expires)
      * @param enforceLimits Whether to enforce spending limits for this key
      * @param limits Initial spending limits for tokens (only used if enforceLimits is true)
      */
