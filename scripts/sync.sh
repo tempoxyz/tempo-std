@@ -23,7 +23,7 @@ function main () {
 
     # Clone specs repo and copy interface specs
     git clone --depth 1 https://github.com/tempoxyz/tempo.git specs
-    cp -r specs/docs/specs/src/interfaces src
+    cp -r specs/tips/ref-impls/src/interfaces src
     rm -rf specs
 
     # Remove redundant files
