@@ -23,8 +23,8 @@ jobs:
         flags:
           - ""
           - --via-ir
-          - --use solc:0.8.13 --via-ir
-          - --use solc:0.8.13
+          - --use solc:0.8.20 --via-ir
+          - --use solc:0.8.20
     steps:
       - uses: actions/checkout@v6
         with:
