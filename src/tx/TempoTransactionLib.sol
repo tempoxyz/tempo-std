@@ -292,6 +292,87 @@ library TempoTransactionLib {
         return abi.encodePacked(TX_TYPE, rlpPayload);
     }
 
+    /// @notice Computes the user signing hash for the transaction.
+    /// @dev When a fee payer signature is present:
+    ///      - fee_token is SKIPPED (user doesn't commit to fee token)
+    ///      - fee payer signature field is encoded as a 0x00 placeholder byte
+    ///      This matches Rust's TempoTransaction::encode_for_signing / signature_hash.
+    function signingHash(TempoTransaction memory self, VmRlp) internal pure returns (bytes32) {
+        uint256 fieldCount = self.hasKeyAuthorization ? 14 : 13;
+        bytes[] memory fields = new bytes[](fieldCount);
+
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
+        fields[4] = _encodeCalls(self.calls);
+        fields[5] = _encodeAccessList(self.accessList);
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
+        fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[8] = TxRlp.encodeString(self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone());
+        fields[9] = TxRlp.encodeString(self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone());
+
+        // When fee payer sig is present, skip fee_token (encode as empty)
+        if (self.hasFeePayerSignature) {
+            fields[10] = TxRlp.encodeString(TxRlp.encodeNone());
+        } else {
+            fields[10] = TxRlp.encodeString(self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone());
+        }
+
+        // Fee payer signature: 0x00 placeholder if present, else 0x80
+        if (self.hasFeePayerSignature) {
+            fields[11] = TxRlp.encodeString(abi.encodePacked(uint8(0)));
+        } else {
+            fields[11] = TxRlp.encodeString(TxRlp.encodeNone());
+        }
+
+        fields[12] = _encodeAuthorizationList(self.authorizationList);
+
+        if (self.hasKeyAuthorization) {
+            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+        }
+
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
+        return keccak256(abi.encodePacked(TX_TYPE, rlpPayload));
+    }
+
+    /// @notice Computes the fee payer signature hash.
+    /// @dev The fee payer signs this hash to sponsor the transaction. Format:
+    ///      keccak256(0x78 || RLP([...all fields with sender address in place of feePayerSignature...]))
+    ///      This matches Rust's TempoTransaction::fee_payer_signature_hash().
+    function feePayerSignatureHash(TempoTransaction memory self, VmRlp, address sender)
+        internal
+        pure
+        returns (bytes32)
+    {
+        uint256 fieldCount = self.hasKeyAuthorization ? 14 : 13;
+        bytes[] memory fields = new bytes[](fieldCount);
+
+        fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));
+        fields[1] = TxRlp.encodeString(TxRlp.encodeUint(self.maxPriorityFeePerGas));
+        fields[2] = TxRlp.encodeString(TxRlp.encodeUint(self.maxFeePerGas));
+        fields[3] = TxRlp.encodeString(TxRlp.encodeUint(self.gasLimit));
+        fields[4] = _encodeCalls(self.calls);
+        fields[5] = _encodeAccessList(self.accessList);
+        fields[6] = TxRlp.encodeString(TxRlp.encodeUint(self.nonceKey));
+        fields[7] = TxRlp.encodeString(TxRlp.encodeUint(self.nonce));
+        fields[8] = TxRlp.encodeString(self.hasValidBefore ? TxRlp.encodeUint(self.validBefore) : TxRlp.encodeNone());
+        fields[9] = TxRlp.encodeString(self.hasValidAfter ? TxRlp.encodeUint(self.validAfter) : TxRlp.encodeNone());
+        fields[10] = TxRlp.encodeString(self.hasFeeToken ? TxRlp.encodeAddress(self.feeToken) : TxRlp.encodeNone());
+
+        // Sender address in place of fee payer signature (matching Rust)
+        fields[11] = TxRlp.encodeString(TxRlp.encodeAddress(sender));
+
+        fields[12] = _encodeAuthorizationList(self.authorizationList);
+
+        if (self.hasKeyAuthorization) {
+            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+        }
+
+        bytes memory rlpPayload = TxRlp.encodeRawList(fields);
+        return keccak256(abi.encodePacked(uint8(0x78), rlpPayload));
+    }
+
     /// @notice Encodes the calls array as an RLP list.
     /// @dev Each call is encoded as [to, value, data].
     ///      For CREATE calls (to == address(0)), `to` is encoded as empty string (0x80)
