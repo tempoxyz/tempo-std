@@ -84,7 +84,7 @@ src
 
 ## Support
 
-The current minimum supported Solidity version is `0.8.13`.
+The current minimum supported Solidity version is `0.8.20`.
 
 ## Contributing
 
