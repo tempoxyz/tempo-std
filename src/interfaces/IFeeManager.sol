@@ -19,4 +19,6 @@ interface IFeeManager is IFeeAMM {
     function userTokens(address) external view returns (address);
 
     function validatorTokens(address) external view returns (address);
+
+    function getFeeToken() external view returns (address);
 }
