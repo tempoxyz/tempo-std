@@ -34,11 +34,12 @@ src
 │   ├── <a href="./src/interfaces/INonce.sol">INonce.sol</a>: 2D Nonce Management for Tempo Transactions | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/nonce/mod.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/IStablecoinDEX.sol">IStablecoinDEX.sol</a>: Stablecoin DEX | <a href="https://docs.tempo.xyz/protocol/exchange/spec#stablecoin-dex">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/stablecoin_dex/mod.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/ITIP20Factory.sol">ITIP20Factory.sol</a>: TIP-20: Factory Contract | <a href="https://docs.tempo.xyz/protocol/tip20/spec#tip20factory">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip20_factory/mod.rs">Implementation</a>
-│   ├── <a href="./src/interfaces/ITIP20RewardsRegistry.sol">ITIP20RewardsRegistry.sol</a>: TIP-20: Reward Distribution | <a href="https://docs.tempo.xyz/protocol/tip20-rewards/spec">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip20_rewards_registry/mod.rs">Implementation</a>
+│   ├── <a href="./src/interfaces/ITIP20RewardsRegistry.sol">ITIP20RewardsRegistry.sol</a>: TIP-20: Reward Distribution | <a href="https://docs.tempo.xyz/protocol/tip20-rewards/spec">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip20/rewards.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/ITIP20RolesAuth.sol">ITIP20RolesAuth.sol</a>: TIP-20: Roles & Permissions | <a href="https://docs.tempo.xyz/protocol/tip20/spec#role-based-access-control">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip20/roles.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/ITIP20.sol">ITIP20.sol</a>: TIP-20: Core Token Standard | <a href="https://docs.tempo.xyz/protocol/tip20/overview">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip20/mod.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/ITIP403Registry.sol">ITIP403Registry.sol</a>: TIP-403: Policy Registry System | <a href="https://docs.tempo.xyz/protocol/tip403/overview">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip403_registry/mod.rs">Implementation</a>
-│   └── <a href="./src/interfaces/IValidatorConfig.sol">IValidatorConfig.sol</a>: Manage consensus validators | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/validator_config/mod.rs">Implementation</a>
+│   ├── <a href="./src/interfaces/IValidatorConfig.sol">IValidatorConfig.sol</a>: Manage consensus validators | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/validator_config/mod.rs">Implementation</a>
+│   └── <a href="./src/interfaces/IValidatorConfigV2.sol">IValidatorConfigV2.sol</a>: Validator Config V2 (append-only) | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/validator_config_v2/mod.rs">Implementation</a>
 └── <a href="./src/StdPrecompiles.sol">StdPrecompiles.sol</a>: Collection of precompiles and their interfaces on Tempo
 </pre>
 
@@ -50,7 +51,8 @@ src
 │   ├── <a href="./src/interfaces/ICreateX.sol">ICreateX.sol</a>: <a href="https://github.com/pcaversaccio/createx">@pcaversaccio/createx</a>
 │   ├── <a href="./src/interfaces/IMulticall3.sol">IMulticall3.sol</a>: <a href="https://github.com/mds1/multicall3">@mds1/multicall3</a>
 │   ├── <a href="./src/interfaces/IPermit2.sol">IPermit2.sol</a>: <a href="https://github.com/Uniswap/permit2">@uniswap/permit2</a>
-└──  <a href="./src/StdContracts.sol">StdContracts.sol</a>: Collection of predeployed contracts and their interfaces on Tempo
+│   └── <a href="./src/interfaces/ITempoStreamChannel.sol">ITempoStreamChannel.sol</a>: Streaming payment channel escrow | <a href="https://github.com/tempoxyz/tempo/blob/main/tips/ref-impls/src/TempoStreamChannel.sol">Implementation</a>
+└── <a href="./src/StdContracts.sol">StdContracts.sol</a>: Collection of predeployed contracts and their interfaces on Tempo
 </pre>
 
 ## Standard Tokens
