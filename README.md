@@ -29,6 +29,7 @@ forge install tempoxyz/tempo-std
 src
 ├── interfaces
 │   ├── <a href="./src/interfaces/IAccountKeychain.sol">IAccountKeychain.sol</a>: Account Keychain | <a href="https://docs.tempo.xyz/protocol/transactions/spec-tempo-transaction#keychain-precompile">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/account_keychain/mod.rs">Implementation</a>
+│   ├── <a href="./src/interfaces/IAddressRegistry.sol">IAddressRegistry.sol</a>: TIP-1022 Virtual Address Registry | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/address_registry/mod.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/IFeeAMM.sol">IFeeAMM.sol</a>: Fee AMM | <a href="https://docs.tempo.xyz/protocol/fees/fee-amm">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip_fee_manager/amm.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/IFeeManager.sol">IFeeManager.sol</a>: Fee AMM Management | <a href="https://docs.tempo.xyz/protocol/fees/spec-fee-amm#2-feemanager-contract">Docs</a> | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/tip_fee_manager/mod.rs">Implementation</a>
 │   ├── <a href="./src/interfaces/INonce.sol">INonce.sol</a>: 2D Nonce Management for Tempo Transactions | <a href="https://github.com/tempoxyz/tempo/blob/main/crates/precompiles/src/nonce/mod.rs">Implementation</a>
