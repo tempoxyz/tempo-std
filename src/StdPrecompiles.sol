@@ -2,12 +2,15 @@
 pragma solidity >=0.8.13 <0.9.0;
 
 import {IAccountKeychain} from "./interfaces/IAccountKeychain.sol";
+import {IAddressRegistry} from "./interfaces/IAddressRegistry.sol";
 import {IFeeManager} from "./interfaces/IFeeManager.sol";
+import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {ITIP20RewardsRegistry} from "./interfaces/ITIP20RewardsRegistry.sol";
 import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
+import {IValidatorConfigV2} from "./interfaces/IValidatorConfigV2.sol";
 import {INonce} from "./interfaces/INonce.sol";
 
 /// @title Standard Precompiles Library for Tempo
@@ -22,6 +25,9 @@ library StdPrecompiles {
     address internal constant NONCE_ADDRESS = 0x4e4F4E4345000000000000000000000000000000;
     address internal constant VALIDATOR_CONFIG_ADDRESS = 0xCccCcCCC00000000000000000000000000000000;
     address internal constant ACCOUNT_KEYCHAIN_ADDRESS = 0xaAAAaaAA00000000000000000000000000000000;
+    address internal constant VALIDATOR_CONFIG_V2_ADDRESS = 0xCcCCCCcC00000000000000000000000000000001;
+    address internal constant ADDRESS_REGISTRY_ADDRESS = 0xfDC0000000000000000000000000000000000000;
+    address internal constant SIGNATURE_VERIFIER_ADDRESS = 0x5165300000000000000000000000000000000000;
 
     IFeeManager internal constant TIP_FEE_MANAGER = IFeeManager(TIP_FEE_MANAGER_ADDRESS);
     ITIP403Registry internal constant TIP403_REGISTRY = ITIP403Registry(TIP403_REGISTRY_ADDRESS);
@@ -32,4 +38,7 @@ library StdPrecompiles {
     INonce internal constant NONCE_PRECOMPILE = INonce(NONCE_ADDRESS);
     IValidatorConfig internal constant VALIDATOR_CONFIG = IValidatorConfig(VALIDATOR_CONFIG_ADDRESS);
     IAccountKeychain internal constant ACCOUNT_KEYCHAIN = IAccountKeychain(ACCOUNT_KEYCHAIN_ADDRESS);
+    IValidatorConfigV2 internal constant VALIDATOR_CONFIG_V2 = IValidatorConfigV2(VALIDATOR_CONFIG_V2_ADDRESS);
+    IAddressRegistry internal constant ADDRESS_REGISTRY = IAddressRegistry(ADDRESS_REGISTRY_ADDRESS);
+    ISignatureVerifier internal constant SIGNATURE_VERIFIER = ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS);
 }
