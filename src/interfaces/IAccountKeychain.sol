@@ -92,7 +92,11 @@ interface IAccountKeychain {
 
     /// @notice Emitted when an access key spends tokens
     event AccessKeySpend(
-        address indexed account, address indexed publicKey, address indexed token, uint256 amount, uint256 remainingLimit
+        address indexed account,
+        address indexed publicKey,
+        address indexed token,
+        uint256 amount,
+        uint256 remainingLimit
     );
 
     /*//////////////////////////////////////////////////////////////
