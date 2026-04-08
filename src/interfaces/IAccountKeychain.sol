@@ -62,7 +62,7 @@ interface IAccountKeychain {
         uint64 expiry; // Unix timestamp when key expires (use type(uint64).max for never)
         bool enforceLimits; // Whether spending limits are enforced for this key
         TokenLimit[] limits; // Token spending limits
-        bool allowAnyCalls; // true = unrestricted calls (allowedCalls must be empty), false = allowedCalls defines scope
+        bool allowAnyCalls; // true = unrestricted calls (allowedCalls must be empty)
         CallScope[] allowedCalls; // Call scopes when allowAnyCalls is false
     }
 
@@ -124,12 +124,11 @@ interface IAccountKeychain {
 
     /**
      * @notice Legacy authorize-key entrypoint used before T3
-     * @dev MUST only be called in transactions signed by the Root Key
      * @param keyId The key identifier (address) to authorize
-     * @param signatureType Signature type of the key (0: Secp256k1, 1: P256, 2: WebAuthn)
-     * @param expiry Unix timestamp when key expires (use type(uint64).max for never expires)
+     * @param signatureType Signature type of the key
+     * @param expiry Unix timestamp when key expires
      * @param enforceLimits Whether to enforce spending limits for this key
-     * @param limits Initial spending limits for tokens (only used if enforceLimits is true)
+     * @param limits Initial spending limits for tokens
      */
     function authorizeKey(
         address keyId,
@@ -141,23 +140,20 @@ interface IAccountKeychain {
 
     /**
      * @notice Authorize a new key for the caller's account with T3 extensions
-     * @dev MUST only be called in transactions signed by the Root Key
      * @param keyId The key identifier (address derived from public key)
-     * @param signatureType Signature type of the key (0: Secp256k1, 1: P256, 2: WebAuthn)
+     * @param signatureType Signature type of the key
      * @param config Access-key expiry and optional limits / call restrictions
      */
     function authorizeKey(address keyId, SignatureType signatureType, KeyRestrictions calldata config) external;
 
     /**
      * @notice Revoke an authorized key
-     * @dev MUST only be called in transactions signed by the Root Key
      * @param keyId The key ID to revoke
      */
     function revokeKey(address keyId) external;
 
     /**
      * @notice Update spending limit for a specific token on an authorized key
-     * @dev MUST only be called in transactions signed by the Root Key
      * @param keyId The key ID to update
      * @param token The token address
      * @param newLimit The new spending limit
@@ -166,9 +162,6 @@ interface IAccountKeychain {
 
     /**
      * @notice Set or replace allowed calls for one or more key+target pairs
-     * @dev MUST only be called in transactions signed by the Root Key.
-     *      Reverts if `scopes` is empty; use `removeAllowedCalls` to delete target scopes.
-     *      `scope.selectorRules = []` allows any selector on that target.
      * @param keyId The key ID to configure
      * @param scopes The call scopes to set
      */
@@ -176,7 +169,6 @@ interface IAccountKeychain {
 
     /**
      * @notice Remove any configured call scope for a key+target pair
-     * @dev MUST only be called in transactions signed by the Root Key
      * @param keyId The key ID to update
      * @param target The target contract to remove from allowed calls
      */
@@ -217,10 +209,7 @@ interface IAccountKeychain {
         returns (uint256 remaining, uint64 periodEnd);
 
     /**
-     * @notice Returns whether an account key is call-scoped and, if so, the configured call scopes
-     * @dev `isScoped = false` means unrestricted. `isScoped = true && scopes.length == 0`
-     *      means scoped deny-all. Missing, revoked, or expired access keys also return scoped
-     *      deny-all so callers do not observe stale persisted scope state.
+     * @notice Returns whether an account key is call-scoped and the configured call scopes
      * @param account The account address
      * @param keyId The key ID
      * @return isScoped Whether the key is call-scoped
@@ -233,7 +222,6 @@ interface IAccountKeychain {
 
     /**
      * @notice Get the transaction key used in the current transaction
-     * @dev Returns address(0) if the Root Key is being used
      * @return The key ID that signed the transaction
      */
     function getTransactionKey() external view returns (address);
