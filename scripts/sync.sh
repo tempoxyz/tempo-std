@@ -22,7 +22,7 @@ function main () {
     log $GREEN "Syncing specifications"
 
     # Clone specs repo and copy interface specs
-    git clone --depth 1 --branch v1.5.3 https://github.com/tempoxyz/tempo.git specs
+    git clone --depth 1 https://github.com/tempoxyz/tempo.git specs
     cp -r specs/tips/ref-impls/src/interfaces src
     rm -rf specs
 
