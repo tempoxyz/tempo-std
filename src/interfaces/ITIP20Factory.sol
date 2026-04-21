@@ -6,8 +6,13 @@ import {ITIP20} from "./ITIP20.sol";
 /// @title The interface for TIP-20 token factory
 /// @notice Factory contract for creating and deploying TIP-20 compliant tokens
 interface ITIP20Factory {
+    /// @notice Thrown when the computed token address falls within the reserved address range
     error AddressReserved();
+    /// @notice Thrown when the computed token address is not in the reserved address range
+    error AddressNotReserved();
+    /// @notice Thrown when the provided quote token address is invalid
     error InvalidQuoteToken();
+    /// @notice Thrown when a token at the computed address already exists
     error TokenAlreadyExists(address tokenAddress);
 
     /// @notice Emitted when a new TIP-20 token is created

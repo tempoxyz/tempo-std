@@ -2,14 +2,13 @@
 pragma solidity >=0.8.13 <0.9.0;
 
 interface IFeeAMM {
+    error DivisionByZero();
     error IdenticalAddresses();
+    error InvalidAmount();
+    error InvalidSwapCalculation();
     error InvalidToken();
     error InsufficientLiquidity();
     error InsufficientReserves();
-    error InvalidAmount();
-    error DivisionByZero();
-    error InvalidSwapCalculation();
-    error InvalidCurrency();
 
     event Burn(
         address indexed sender,
