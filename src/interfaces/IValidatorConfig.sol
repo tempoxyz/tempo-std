@@ -62,7 +62,14 @@ interface IValidatorConfig {
     function validators(address validatorAddress)
         external
         view
-        returns (bytes32 publicKey, bool active, uint64 index, address addr, string memory inboundAddress, string memory outboundAddress);
+        returns (
+            bytes32 publicKey,
+            bool active,
+            uint64 index,
+            address addr,
+            string memory inboundAddress,
+            string memory outboundAddress
+        );
 
     /// @notice Get validator address at a given array index
     /// @param index The index in the validators array
