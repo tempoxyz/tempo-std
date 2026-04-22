@@ -7,7 +7,7 @@ interface ITIP20RolesAuthErr {
 }
 
 /// @title The interface for interacting with TIP-20 token authorization-related features.
-interface ITIP20RolesAuth {
+interface ITIP20RolesAuth is ITIP20RolesAuthErr {
     event RoleMembershipUpdated(bytes32 indexed role, address indexed account, address indexed sender, bool hasRole);
     event RoleAdminUpdated(bytes32 indexed role, bytes32 indexed newAdminRole, address indexed sender);
 
