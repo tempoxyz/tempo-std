@@ -15,7 +15,7 @@ import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
 import {IValidatorConfigV2} from "./interfaces/IValidatorConfigV2.sol";
 
-abstract contract StdBase {
+abstract contract Tempo {
     // Nonce precompile
     INonce public constant nonce = StdPrecompiles.NONCE_PRECOMPILE;
     address public constant NONCE = StdPrecompiles.NONCE_ADDRESS;
