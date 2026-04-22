@@ -12,23 +12,18 @@ interface ITIP20 {
 
     /// @notice Error when an account has insufficient balance for the requested operation.
     error InsufficientBalance(uint256 currentBalance, uint256 expectedBalance, address);
-    /// @notice Error when an invalid token amount is provided.
     error InvalidAmount();
 
     /// @notice Error when an invalid currency identifier is provided.
     error InvalidCurrency();
-    /// @notice Error when an invalid quote token is provided.
     error InvalidQuoteToken();
-    /// @notice Error when an invalid token address is provided.
+    error InvalidBaseToken();
     error InvalidToken();
-    /// @notice Error when an invalid transfer policy identifier is provided.
     error InvalidTransferPolicyId();
 
     /// @notice Error when attempting to transfer to an invalid recipient address.
     error InvalidRecipient();
-    /// @notice Error when an invalid supply cap value is provided.
     error InvalidSupplyCap();
-    /// @notice Error when there is no opted-in supply for the operation.
     error NoOptedInSupply();
 
     /// @notice Error when a transfer is blocked by the current transfer policy.
@@ -36,14 +31,7 @@ interface ITIP20 {
 
     /// @notice Error when attempting to burn from a protected address.
     error ProtectedAddress();
-    /// @notice Error when minting would exceed the supply cap.
     error SupplyCapExceeded();
-    /// @notice Error when the transaction payload is invalid.
-    error InvalidPayload();
-    /// @notice Error when the caller lacks authorization for the requested action.
-    error Unauthorized();
-    /// @notice Error when that precompile instance has not been initialized yet.
-    error Uninitialized();
 
     /// @notice Emitted when an allowance is set between owner and spender.
     /// @param owner The address that owns the tokens.
@@ -195,6 +183,8 @@ interface ITIP20 {
 
     function symbol() external view returns (string memory);
 
+    function systemTransferFrom(address from, address to, uint256 amount) external returns (bool);
+
     /// @notice Returns the total token supply.
     /// @return The total amount of tokens in circulation.
     function totalSupply() external view returns (uint256);
@@ -204,6 +194,10 @@ interface ITIP20 {
     /// @param amount The amount of tokens to transfer.
     /// @return success True if the transfer was successful.
     function transfer(address to, uint256 amount) external returns (bool);
+
+    function transferFeePostTx(address to, uint256 refund, uint256 actualUsed) external;
+
+    function transferFeePreTx(address from, uint256 amount) external;
 
     /// @notice Transfers tokens from one address to another using allowance.
     /// @param from The address to transfer tokens from.
@@ -242,7 +236,7 @@ interface ITIP20 {
     /// @dev Returns the total pending claimable reward amount, including stored balance and newly accrued rewards.
     /// @param account The address to query pending rewards for.
     /// @return The total pending claimable reward amount.
-    function getPendingRewards(address account) external view returns (uint128);
+    function getPendingRewards(address account) external view returns (uint256);
 
     // EIP-2612 Permit (TIP-1004)
 
