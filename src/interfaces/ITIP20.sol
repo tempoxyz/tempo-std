@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity >=0.8.13 <0.9.0;
 
-/// @title The interface for TIP-20 compliant tokens
-/// @notice A token standard that extends ERC-20 with additional features including transfer policies, memo support, and pause functionality
-interface ITIP20 {
+import {ITIP20RolesAuth, ITIP20RolesAuthErr} from "./ITIP20RolesAuth.sol";
+
+/// @title The interface for interacting with core TIP-20 token features.
+/// @dev   If you also need role authorization capabilities, use `ITIP20Token`.
+interface ITIP20 is ITIP20RolesAuthErr {
     /// @notice Error when attempting an operation while the contract is paused.
     error ContractPaused();
 
@@ -40,8 +42,6 @@ interface ITIP20 {
     error SupplyCapExceeded();
     /// @notice Error when the transaction payload is invalid.
     error InvalidPayload();
-    /// @notice Error when the caller lacks authorization for the requested action.
-    error Unauthorized();
     /// @notice Error when that precompile instance has not been initialized yet.
     error Uninitialized();
 
@@ -262,3 +262,7 @@ interface ITIP20 {
     /// @notice Returns the EIP-712 domain separator for this token
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 }
+
+/// @title The interface for TIP-20 compliant tokens
+/// @notice A token standard that extends ERC-20 with additional features including transfer policies, memo support, and pause functionality
+interface ITIP20Token is ITIP20, ITIP20RolesAuth {}
