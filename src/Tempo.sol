@@ -45,12 +45,12 @@ abstract contract Tempo {
     address public constant SIGNATURE_VERIFIER = StdPrecompiles.SIGNATURE_VERIFIER_ADDRESS;
 
     // TIP-403 registry precompile
-    ITIP403Registry public constant registry = StdPrecompiles.TIP403_REGISTRY;
-    address public constant REGISTRY = StdPrecompiles.TIP403_REGISTRY_ADDRESS;
+    ITIP403Registry public constant tip403Registry = StdPrecompiles.TIP403_REGISTRY;
+    address public constant TIP403_REGISTRY = StdPrecompiles.TIP403_REGISTRY_ADDRESS;
 
-    // TIP-20 address registry precompile
-    IAddressRegistry public constant tip20Registry = StdPrecompiles.ADDRESS_REGISTRY;
-    address public constant TIP20_REGISTRY = StdPrecompiles.ADDRESS_REGISTRY_ADDRESS;
+    // Address registry precompile
+    IAddressRegistry public constant addrRegistry = StdPrecompiles.ADDRESS_REGISTRY;
+    address public constant ADDRESS_REGISTRY = StdPrecompiles.ADDRESS_REGISTRY_ADDRESS;
 
     // TIP-20 factory precompile
     ITIP20Factory public constant tip20Factory = StdPrecompiles.TIP20_FACTORY;
