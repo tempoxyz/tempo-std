@@ -75,9 +75,6 @@ interface IValidatorConfigV2 {
     /// @notice Thrown when the Ed25519 signature verification fails
     error InvalidSignature();
 
-    /// @notice Thrown when the signature bytes are not in the expected format
-    error InvalidSignatureFormat();
-
     /// @notice Thrown when V2 is not yet initialized (writes blocked before init)
     error NotInitialized();
 

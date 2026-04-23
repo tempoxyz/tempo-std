@@ -7,7 +7,6 @@ import {ITIP20} from "./ITIP20.sol";
 /// @notice Factory contract for creating and deploying TIP-20 compliant tokens
 interface ITIP20Factory {
     error AddressReserved();
-    error AddressNotReserved();
     error InvalidQuoteToken();
     error TokenAlreadyExists(address tokenAddress);
 

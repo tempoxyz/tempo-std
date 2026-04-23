@@ -5,9 +5,7 @@ pragma solidity >=0.8.13 <0.9.0;
 /// @notice Interface for the TIP-1020 Signature Verification Precompile
 /// @dev Deployed at 0x5165300000000000000000000000000000000000
 interface ISignatureVerifier {
-    /// @notice Thrown when the signature bytes are not in the expected encoding format
     error InvalidFormat();
-    /// @notice Thrown when the signature verification fails
     error InvalidSignature();
 
     /// @notice Recovers the signer of a Tempo signature (secp256k1, P256, WebAuthn).

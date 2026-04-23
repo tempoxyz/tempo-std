@@ -75,19 +75,19 @@ interface IStablecoinDEX {
     );
     event PairCreated(bytes32 indexed key, address indexed base, address indexed quote);
 
-    function MAX_PRICE() external pure returns (uint32);
+    function MAX_PRICE() external view returns (uint32);
 
-    function MAX_TICK() external pure returns (int16);
+    function MAX_TICK() external view returns (int16);
 
-    function MIN_PRICE() external pure returns (uint32);
+    function MIN_PRICE() external view returns (uint32);
 
-    function MIN_TICK() external pure returns (int16);
+    function MIN_TICK() external view returns (int16);
 
-    function TICK_SPACING() external pure returns (int16);
+    function TICK_SPACING() external view returns (int16);
 
-    function PRICE_SCALE() external pure returns (uint32);
+    function PRICE_SCALE() external view returns (uint32);
 
-    function MIN_ORDER_AMOUNT() external pure returns (uint128);
+    function MIN_ORDER_AMOUNT() external view returns (uint128);
 
     function nextOrderId() external view returns (uint128);
 
