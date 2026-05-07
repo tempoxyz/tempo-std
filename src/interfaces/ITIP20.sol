@@ -261,6 +261,34 @@ interface ITIP20 is ITIP20RolesAuthErr {
 
     /// @notice Returns the EIP-712 domain separator for this token
     function DOMAIN_SEPARATOR() external view returns (bytes32);
+
+    // TIP-1026: Token Logo URI
+
+    /// @notice The provided logo URI exceeds the maximum length of 256 bytes.
+    error LogoURITooLong();
+
+    /// @notice The provided logo URI is non-empty and is either not a syntactically
+    ///         valid URI or its scheme is not in the allowlist (`https`, `http`,
+    ///         `ipfs`, `data`, ASCII-case-insensitive).
+    error InvalidLogoURI();
+
+    /// @notice Emitted when the logo URI is updated.
+    /// @param updater The account that performed the update.
+    /// @param newLogoURI The new logo URI.
+    event LogoURIUpdated(address indexed updater, string newLogoURI);
+
+    /// @notice Returns the logo URI for this token (TIP-1026).
+    /// @return The logo URI string (max 256 bytes; empty if not set).
+    function logoURI() external view returns (string memory);
+
+    /// @notice Sets the logo URI for this token (requires DEFAULT_ADMIN_ROLE).
+    /// @param newLogoURI The new logo URI (must be <= 256 bytes and, if non-empty,
+    ///                   a valid URI with an allowed scheme).
+    /// @dev Reverts with `LogoURITooLong` if the URI exceeds 256 bytes, or with
+    ///      `InvalidLogoURI` if the URI is non-empty and either not syntactically
+    ///      a URI or its scheme is not in the allowlist. An empty string is valid
+    ///      and clears the logo URI.
+    function setLogoURI(string calldata newLogoURI) external;
 }
 
 /// @title The interface for TIP-20 compliant tokens

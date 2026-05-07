@@ -44,6 +44,28 @@ interface ITIP20Factory {
         bytes32 salt
     ) external returns (address);
 
+    /// @notice Creates a new TIP-20 token and atomically sets its `logoURI` (TIP-1026).
+    /// @dev Solidity overload of `createToken` with an additional `logoURI` argument.
+    ///      The legacy 6-argument selector is unchanged and remains supported.
+    ///      The logo URI is validated **before** the token is deployed.
+    ///      Reverts with `LogoURITooLong` if `bytes(logoURI).length > 256`, or with
+    ///      `InvalidLogoURI` if `logoURI` is non-empty and either has no parseable
+    ///      scheme (RFC 3986 §3.1) or its scheme is not in the allowlist
+    ///      (`https`, `http`, `ipfs`, `data`, case-insensitive).
+    ///      The `LogoURIUpdated` event is emitted by the new token (not the factory)
+    ///      with `updater = msg.sender`. An empty `logoURI` is valid and skips both
+    ///      the slot write and the event.
+    /// @return The address of the newly created token contract
+    function createToken(
+        string memory name,
+        string memory symbol,
+        string memory currency,
+        ITIP20 quoteToken,
+        address admin,
+        bytes32 salt,
+        string memory logoURI
+    ) external returns (address);
+
     /// @notice Checks if a given address is a TIP-20 compliant token
     /// @param token The address of the token to check
     /// @return True if the address is a TIP-20 token, false otherwise
