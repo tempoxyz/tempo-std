@@ -99,6 +99,9 @@ interface IAccountKeychain {
         uint256 remainingLimit
     );
 
+    /// @notice Emitted when a TIP-1053 key-authorization nonce is consumed
+    event KeyAuthorizationNonceConsumed(address indexed account, bytes32 indexed nonce);
+
     /*//////////////////////////////////////////////////////////////
                                 ERRORS
     //////////////////////////////////////////////////////////////*/
@@ -116,6 +119,8 @@ interface IAccountKeychain {
     error SignatureTypeMismatch(uint8 expected, uint8 actual);
     error CallNotAllowed();
     error InvalidCallScope();
+    error InvalidKeyAuthorizationNonce();
+    error KeyAuthorizationNonceAlreadyUsed();
     error LegacyAuthorizeKeySelectorChanged(bytes4 newSelector);
 
     /*//////////////////////////////////////////////////////////////
@@ -145,6 +150,22 @@ interface IAccountKeychain {
      * @param config Access-key expiry and optional limits / call restrictions
      */
     function authorizeKey(address keyId, SignatureType signatureType, KeyRestrictions calldata config) external;
+
+    /**
+     * @notice Authorize a new key with a TIP-1053 replay nonce
+     * @param keyId The key identifier (address derived from public key)
+     * @param signatureType Signature type of the key
+     * @param config Access-key expiry and optional limits / call restrictions
+     * @param nonce The per-account key authorization nonce to consume
+     */
+    function authorizeKey(address keyId, SignatureType signatureType, KeyRestrictions calldata config, bytes32 nonce)
+        external;
+
+    /**
+     * @notice Burn a TIP-1053 key-authorization nonce without authorizing a key
+     * @param nonce The per-account key authorization nonce to consume
+     */
+    function burnKeyAuthorizationNonce(bytes32 nonce) external;
 
     /**
      * @notice Revoke an authorized key
@@ -219,6 +240,14 @@ interface IAccountKeychain {
         external
         view
         returns (bool isScoped, CallScope[] memory scopes);
+
+    /**
+     * @notice Returns whether a TIP-1053 key-authorization nonce has been consumed
+     * @param account The account address
+     * @param nonce The per-account key authorization nonce
+     * @return used Whether the nonce has been consumed
+     */
+    function isKeyAuthorizationNonceUsed(address account, bytes32 nonce) external view returns (bool used);
 
     /**
      * @notice Get the transaction key used in the current transaction
