@@ -23,6 +23,15 @@ interface INonce {
     /// @notice Thrown when a nonce value would overflow
     error NonceOverflow();
 
+    /// @notice Thrown when an expiring nonce has already been used
+    error ExpiringNonceReplay();
+
+    /// @notice Thrown when the expiring nonce set is full and cannot accept more entries
+    error ExpiringNonceSetFull();
+
+    /// @notice Thrown when the expiry timestamp for an expiring nonce is invalid
+    error InvalidExpiringNonceExpiry();
+
     /// @notice Get the current nonce for a specific account and nonce key
     /// @param account The account address
     /// @param nonceKey The nonce key (must be > 0, protocol nonce key 0 not supported)

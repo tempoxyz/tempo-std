@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity >=0.8.13 <0.9.0;
 
-/// @title The interface for TIP-20 compliant tokens
-/// @notice A token standard that extends ERC-20 with additional features including transfer policies, memo support, and pause functionality
-interface ITIP20 {
+import {ITIP20RolesAuth, ITIP20RolesAuthErr} from "./ITIP20RolesAuth.sol";
+
+/// @title The interface for interacting with core TIP-20 token features.
+/// @dev   If you also need role authorization capabilities, use `ITIP20Token`.
+interface ITIP20 is ITIP20RolesAuthErr {
     /// @notice Error when attempting an operation while the contract is paused.
     error ContractPaused();
 
@@ -12,18 +14,23 @@ interface ITIP20 {
 
     /// @notice Error when an account has insufficient balance for the requested operation.
     error InsufficientBalance(uint256 currentBalance, uint256 expectedBalance, address);
+    /// @notice Error when an invalid token amount is provided.
     error InvalidAmount();
 
     /// @notice Error when an invalid currency identifier is provided.
     error InvalidCurrency();
+    /// @notice Error when an invalid quote token is provided.
     error InvalidQuoteToken();
-    error InvalidBaseToken();
+    /// @notice Error when an invalid token address is provided.
     error InvalidToken();
+    /// @notice Error when an invalid transfer policy identifier is provided.
     error InvalidTransferPolicyId();
 
     /// @notice Error when attempting to transfer to an invalid recipient address.
     error InvalidRecipient();
+    /// @notice Error when an invalid supply cap value is provided.
     error InvalidSupplyCap();
+    /// @notice Error when there is no opted-in supply for the operation.
     error NoOptedInSupply();
 
     /// @notice Error when a transfer is blocked by the current transfer policy.
@@ -31,7 +38,12 @@ interface ITIP20 {
 
     /// @notice Error when attempting to burn from a protected address.
     error ProtectedAddress();
+    /// @notice Error when minting would exceed the supply cap.
     error SupplyCapExceeded();
+    /// @notice Error when the transaction payload is invalid.
+    error InvalidPayload();
+    /// @notice Error when that precompile instance has not been initialized yet.
+    error Uninitialized();
 
     /// @notice Emitted when an allowance is set between owner and spender.
     /// @param owner The address that owns the tokens.
@@ -183,8 +195,6 @@ interface ITIP20 {
 
     function symbol() external view returns (string memory);
 
-    function systemTransferFrom(address from, address to, uint256 amount) external returns (bool);
-
     /// @notice Returns the total token supply.
     /// @return The total amount of tokens in circulation.
     function totalSupply() external view returns (uint256);
@@ -194,10 +204,6 @@ interface ITIP20 {
     /// @param amount The amount of tokens to transfer.
     /// @return success True if the transfer was successful.
     function transfer(address to, uint256 amount) external returns (bool);
-
-    function transferFeePostTx(address to, uint256 refund, uint256 actualUsed) external;
-
-    function transferFeePreTx(address from, uint256 amount) external;
 
     /// @notice Transfers tokens from one address to another using allowance.
     /// @param from The address to transfer tokens from.
@@ -236,7 +242,7 @@ interface ITIP20 {
     /// @dev Returns the total pending claimable reward amount, including stored balance and newly accrued rewards.
     /// @param account The address to query pending rewards for.
     /// @return The total pending claimable reward amount.
-    function getPendingRewards(address account) external view returns (uint256);
+    function getPendingRewards(address account) external view returns (uint128);
 
     // EIP-2612 Permit (TIP-1004)
 
@@ -255,4 +261,36 @@ interface ITIP20 {
 
     /// @notice Returns the EIP-712 domain separator for this token
     function DOMAIN_SEPARATOR() external view returns (bytes32);
+
+    // TIP-1026: Token Logo URI
+
+    /// @notice The provided logo URI exceeds the maximum length of 256 bytes.
+    error LogoURITooLong();
+
+    /// @notice The provided logo URI is non-empty and is either not a syntactically
+    ///         valid URI or its scheme is not in the allowlist (`https`, `http`,
+    ///         `ipfs`, `data`, ASCII-case-insensitive).
+    error InvalidLogoURI();
+
+    /// @notice Emitted when the logo URI is updated.
+    /// @param updater The account that performed the update.
+    /// @param newLogoURI The new logo URI.
+    event LogoURIUpdated(address indexed updater, string newLogoURI);
+
+    /// @notice Returns the logo URI for this token (TIP-1026).
+    /// @return The logo URI string (max 256 bytes; empty if not set).
+    function logoURI() external view returns (string memory);
+
+    /// @notice Sets the logo URI for this token (requires DEFAULT_ADMIN_ROLE).
+    /// @param newLogoURI The new logo URI (must be <= 256 bytes and, if non-empty,
+    ///                   a valid URI with an allowed scheme).
+    /// @dev Reverts with `LogoURITooLong` if the URI exceeds 256 bytes, or with
+    ///      `InvalidLogoURI` if the URI is non-empty and either not syntactically
+    ///      a URI or its scheme is not in the allowlist. An empty string is valid
+    ///      and clears the logo URI.
+    function setLogoURI(string calldata newLogoURI) external;
 }
+
+/// @title The interface for TIP-20 compliant tokens
+/// @notice A token standard that extends ERC-20 with additional features including transfer policies, memo support, and pause functionality
+interface ITIP20Token is ITIP20, ITIP20RolesAuth {}

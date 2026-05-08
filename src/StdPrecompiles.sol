@@ -7,7 +7,6 @@ import {IFeeManager} from "./interfaces/IFeeManager.sol";
 import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
-import {ITIP20RewardsRegistry} from "./interfaces/ITIP20RewardsRegistry.sol";
 import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
 import {IValidatorConfigV2} from "./interfaces/IValidatorConfigV2.sol";
@@ -20,7 +19,6 @@ library StdPrecompiles {
     address internal constant TIP_FEE_MANAGER_ADDRESS = 0xfeEC000000000000000000000000000000000000;
     address internal constant TIP403_REGISTRY_ADDRESS = 0x403c000000000000000000000000000000000000;
     address internal constant TIP20_FACTORY_ADDRESS = 0x20Fc000000000000000000000000000000000000;
-    address internal constant TIP20_REWARDS_REGISTRY_ADDRESS = 0x2100000000000000000000000000000000000000;
     address internal constant STABLECOIN_DEX_ADDRESS = 0xDEc0000000000000000000000000000000000000;
     address internal constant NONCE_ADDRESS = 0x4e4F4E4345000000000000000000000000000000;
     address internal constant VALIDATOR_CONFIG_ADDRESS = 0xCccCcCCC00000000000000000000000000000000;
@@ -32,8 +30,6 @@ library StdPrecompiles {
     IFeeManager internal constant TIP_FEE_MANAGER = IFeeManager(TIP_FEE_MANAGER_ADDRESS);
     ITIP403Registry internal constant TIP403_REGISTRY = ITIP403Registry(TIP403_REGISTRY_ADDRESS);
     ITIP20Factory internal constant TIP20_FACTORY = ITIP20Factory(TIP20_FACTORY_ADDRESS);
-    ITIP20RewardsRegistry internal constant TIP20_REWARDS_REGISTRY =
-        ITIP20RewardsRegistry(TIP20_REWARDS_REGISTRY_ADDRESS);
     IStablecoinDEX internal constant STABLECOIN_DEX = IStablecoinDEX(STABLECOIN_DEX_ADDRESS);
     INonce internal constant NONCE_PRECOMPILE = INonce(NONCE_ADDRESS);
     IValidatorConfig internal constant VALIDATOR_CONFIG = IValidatorConfig(VALIDATOR_CONFIG_ADDRESS);
