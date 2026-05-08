@@ -68,7 +68,20 @@ src
 
 <pre>
 src
-└── <a href="./src/StdVm.sol">StdVm.sol</a>: Minimal Vm interfaces for RLP encoding and transaction execution
+└── <a href="./src/StdVm.sol">StdVm.sol</a>: Minimal Vm interfaces for RLP encoding, transaction execution, and signing cheatcodes
+</pre>
+
+## Signature Helpers
+
+Solidity helpers for building, encoding, and signing the byte-packed signature blobs
+consumed by the [TIP-1020 SignatureVerifier precompile](./src/interfaces/ISignatureVerifier.sol).
+Useful for testing AA flows with Foundry without re-implementing low-S normalization,
+WebAuthn assertion construction, base64url, or P-256 address derivation.
+
+<pre>
+src
+└── sig
+    └── <a href="./src/sig/SignatureLib.sol">SignatureLib.sol</a>: Encoders, low-S normalization, WebAuthn data builder, and Vm-based signers for secp256k1 / P-256 / WebAuthn signatures
 </pre>
 
 ## Transaction Builders
