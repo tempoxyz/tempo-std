@@ -19,7 +19,6 @@ import {VM_ADDRESS, VmSign} from "../StdVm.sol";
 /// All ECDSA signatures are normalized to low-s form, matching the precompile's
 /// canonical-form requirement.
 library SignatureLib {
-
     /*//////////////////////////////////////////////////////////////
                                   CONSTANTS
     //////////////////////////////////////////////////////////////*/
@@ -33,18 +32,14 @@ library SignatureLib {
     uint8 internal constant TYPE_WEBAUTHN = 0x02;
 
     /// @notice secp256k1 group order `n`.
-    uint256 internal constant SECP256K1_N =
-        0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141;
+    uint256 internal constant SECP256K1_N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141;
     /// @notice `floor(n/2)` for secp256k1 (low-s threshold).
-    uint256 internal constant SECP256K1_N_HALF =
-        0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0;
+    uint256 internal constant SECP256K1_N_HALF = 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0;
 
     /// @notice NIST P-256 group order `n`.
-    uint256 internal constant P256_N =
-        0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551;
+    uint256 internal constant P256_N = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551;
     /// @notice `floor(n/2)` for P-256 (low-s threshold).
-    uint256 internal constant P256_N_HALF =
-        0x7FFFFFFF800000007FFFFFFFFFFFFFFFDE737D56D38BCF4279DCE5617E3192A8;
+    uint256 internal constant P256_N_HALF = 0x7FFFFFFF800000007FFFFFFFFFFFFFFFDE737D56D38BCF4279DCE5617E3192A8;
 
     /// @notice WebAuthn authenticatorData flag bits.
     uint8 internal constant WEBAUTHN_FLAG_UP = 0x01; // user present
@@ -103,13 +98,7 @@ library SignatureLib {
     /// @notice Encodes a WebAuthn signature in the precompile's wire format.
     /// @dev `0x02 || webauthnData || r || s || pubX || pubY`. `s` is normalized to low-s.
     /// @param webauthnData The concatenation of `authenticatorData || clientDataJSON`.
-    function encodeWebAuthn(
-        bytes memory webauthnData,
-        bytes32 r,
-        bytes32 s,
-        bytes32 pubX,
-        bytes32 pubY
-    )
+    function encodeWebAuthn(bytes memory webauthnData, bytes32 r, bytes32 s, bytes32 pubX, bytes32 pubY)
         internal
         pure
         returns (bytes memory)
@@ -147,9 +136,8 @@ library SignatureLib {
         bytes32 rpIdHash = sha256(bytes(rpId));
         bytes memory authData = abi.encodePacked(rpIdHash, WEBAUTHN_FLAG_UP, bytes4(0));
         string memory challengeB64 = base64UrlEncode(abi.encodePacked(challenge));
-        bytes memory clientDataJSON = abi.encodePacked(
-            '{"type":"webauthn.get","challenge":"', challengeB64, '","origin":"', origin, '"}'
-        );
+        bytes memory clientDataJSON =
+            abi.encodePacked('{"type":"webauthn.get","challenge":"', challengeB64, '","origin":"', origin, '"}');
         return abi.encodePacked(authData, clientDataJSON);
     }
 
@@ -160,7 +148,9 @@ library SignatureLib {
         require(webauthnData.length >= 37, "SignatureLib: webauthnData too short");
         bytes memory authData = new bytes(37);
         bytes memory clientDataJSON = new bytes(webauthnData.length - 37);
-        for (uint256 i = 0; i < 37; i++) authData[i] = webauthnData[i];
+        for (uint256 i = 0; i < 37; i++) {
+            authData[i] = webauthnData[i];
+        }
         for (uint256 i = 0; i < clientDataJSON.length; i++) {
             clientDataJSON[i] = webauthnData[37 + i];
         }
@@ -228,11 +218,7 @@ library SignatureLib {
         bytes32 pubY,
         string memory rpId,
         string memory origin
-    )
-        internal
-        pure
-        returns (bytes memory)
-    {
+    ) internal pure returns (bytes memory) {
         bytes memory webauthnData = buildWebAuthnData(challenge, rpId, origin);
         bytes32 messageHash = webAuthnMessageHash(webauthnData);
         (bytes32 r, bytes32 s) = VmSign(VM_ADDRESS).signP256(privateKey, messageHash);
@@ -252,5 +238,4 @@ library SignatureLib {
     function verify(address signer, bytes32 hash, bytes memory signature) internal view returns (bool) {
         return ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS).verify(signer, hash, signature);
     }
-
 }
