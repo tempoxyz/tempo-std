@@ -70,7 +70,6 @@ interface IStablecoinDEX {
         uint128 amount,
         bool isBid,
         int16 tick,
-        bool isFlipOrder,
         int16 flipTick
     );
     event OrderPlaced(
