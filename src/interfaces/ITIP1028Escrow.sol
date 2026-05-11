@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity >=0.8.13 <0.9.0;
 
+import {ITIP403Registry} from "./ITIP403Registry.sol";
+
 /// @title The interface for TIP-1028 escrow
 /// @notice Escrow holding blocked inbound TIP-20 transfers and mints until claimed
 interface ITIP1028Escrow {
@@ -17,7 +19,7 @@ interface ITIP1028Escrow {
     /// @param recipient The intended recipient of the blocked inbound
     /// @param blockedAt The block number at which the inbound was blocked
     /// @param blockedNonce The escrow-scoped nonce assigned to this blocked receipt
-    /// @param blockedReason The reason the inbound was blocked (encoded as uint8)
+    /// @param blockedReason The reason the inbound was blocked
     /// @param kind Whether the blocked inbound was a transfer or mint
     /// @param memo Application-specific memo attached to the inbound
     struct ClaimReceiptV1 {
@@ -25,7 +27,7 @@ interface ITIP1028Escrow {
         address recipient;
         uint64 blockedAt;
         uint64 blockedNonce;
-        uint8 blockedReason;
+        ITIP403Registry.BlockedReason blockedReason;
         InboundKind kind;
         bytes32 memo;
     }
@@ -71,7 +73,7 @@ interface ITIP1028Escrow {
         uint64 blockedAt,
         address recipient,
         uint256 amount,
-        uint8 blockedReason,
+        ITIP403Registry.BlockedReason blockedReason,
         address recoveryAuthority,
         bytes32 memo
     );
