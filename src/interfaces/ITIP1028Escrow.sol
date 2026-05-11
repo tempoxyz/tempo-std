@@ -38,10 +38,12 @@ interface ITIP1028Escrow {
     /// @param receiptVersion The version of the claim receipt encoding
     /// @param receipt The ABI-encoded claim receipt
     /// @return amount The escrowed balance for the receipt
-    function blockedReceiptBalance(address token, address recoveryAuthority, uint8 receiptVersion, bytes calldata receipt)
-        external
-        view
-        returns (uint256 amount);
+    function blockedReceiptBalance(
+        address token,
+        address recoveryAuthority,
+        uint8 receiptVersion,
+        bytes calldata receipt
+    ) external view returns (uint256 amount);
 
     /// @notice Claims a blocked receipt, releasing escrowed funds to the specified address
     /// @param token The TIP-20 token address

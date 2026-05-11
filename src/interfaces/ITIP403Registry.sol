@@ -153,7 +153,9 @@ interface ITIP403Registry {
     /// @param senderPolicyId The sender policy ID for the receive policy
     /// @param tokenFilterId The token filter policy ID for the receive policy
     /// @param recoveryAuthority The recovery authority address for blocked receipts
-    event ReceivePolicyUpdated(address indexed account, uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAuthority);
+    event ReceivePolicyUpdated(
+        address indexed account, uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAuthority
+    );
 
     /// @notice TIP-1015: Creates a new immutable compound policy
     /// @param senderPolicyId Policy ID to check for transfer senders
