@@ -88,7 +88,6 @@ interface ITIP1028Escrow {
     /// @param recipient The intended recipient of the blocked inbound
     /// @param recoveryAuthority The recovery authority that authorized the claim
     /// @param caller The address that called claim
-    /// @param to The address that received the released funds
     /// @param amount The amount of tokens released
     event BlockedReceiptClaimed(
         address indexed token,
@@ -100,7 +99,6 @@ interface ITIP1028Escrow {
         address recipient,
         address recoveryAuthority,
         address caller,
-        address to,
         uint256 amount
     );
 
