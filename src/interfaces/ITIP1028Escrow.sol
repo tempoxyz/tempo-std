@@ -45,14 +45,12 @@ interface ITIP1028Escrow {
         bytes calldata receipt
     ) external view returns (uint256 amount);
 
-    /// @notice Claims a blocked receipt, releasing escrowed funds to the specified address
+    /// @notice Claims a blocked receipt, releasing escrowed funds to the authorized claim target
     /// @param token The TIP-20 token address
     /// @param recoveryAuthority The recovery authority that was assigned to the blocked receipt
     /// @param receiptVersion The version of the claim receipt encoding
     /// @param receipt The ABI-encoded claim receipt
-    /// @param to The address to release the escrowed funds to
-    function claim(address token, address recoveryAuthority, uint8 receiptVersion, bytes calldata receipt, address to)
-        external;
+    function claim(address token, address recoveryAuthority, uint8 receiptVersion, bytes calldata receipt) external;
 
     /// @notice Emitted when an inbound transfer or mint is blocked by a receive policy
     /// @param token The TIP-20 token address
