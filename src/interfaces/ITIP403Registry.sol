@@ -14,6 +14,16 @@ interface ITIP403Registry {
         COMPOUND
     }
 
+    /// @notice Reasons an inbound transfer can be blocked by a receive policy
+    /// @param NONE The transfer is not blocked
+    /// @param TOKEN_FILTER The token is not allowed by the token filter policy
+    /// @param RECEIVE_POLICY The sender is not allowed by the receive policy
+    enum BlockedReason {
+        NONE,
+        TOKEN_FILTER,
+        RECEIVE_POLICY
+    }
+
     /// @notice Data structure containing policy configuration
     /// @param policyType The type of policy (whitelist or blacklist)
     /// @param admin The address authorized to modify this policy
@@ -39,6 +49,12 @@ interface ITIP403Registry {
 
     /// @notice TIP-1022 virtual addresses cannot be used as literal policy members
     error VirtualAddressNotAllowed();
+
+    /// @notice Error when a receive policy references an incompatible policy type
+    error InvalidReceivePolicyType();
+
+    /// @notice Error when the recovery authority address is invalid
+    error InvalidRecoveryAuthority();
 
     /// @notice Emitted when a policy's admin is updated
     /// @param policyId The ID of the policy that was updated
@@ -132,6 +148,13 @@ interface ITIP403Registry {
         uint64 mintRecipientPolicyId
     );
 
+    /// @notice Emitted when an account's receive policy is updated
+    /// @param account The account whose receive policy was updated
+    /// @param senderPolicyId The sender policy ID for the receive policy
+    /// @param tokenFilterId The token filter policy ID for the receive policy
+    /// @param recoveryAuthority The recovery authority address for blocked receipts
+    event ReceivePolicyUpdated(address indexed account, uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAuthority);
+
     /// @notice TIP-1015: Creates a new immutable compound policy
     /// @param senderPolicyId Policy ID to check for transfer senders
     /// @param recipientPolicyId Policy ID to check for transfer recipients
@@ -168,4 +191,45 @@ interface ITIP403Registry {
         external
         view
         returns (uint64 senderPolicyId, uint64 recipientPolicyId, uint64 mintRecipientPolicyId);
+
+    // =========================================================================
+    //                      TIP-1028: Receive Policies
+    // =========================================================================
+
+    /// @notice Returns the receive policy configuration for an account
+    /// @param account The account to query
+    /// @return hasReceivePolicy Whether the account has a receive policy set
+    /// @return senderPolicyId The sender policy ID for inbound transfer authorization
+    /// @return senderPolicyType The type of the sender policy
+    /// @return tokenFilterId The token filter policy ID
+    /// @return tokenFilterType The type of the token filter policy
+    /// @return recoveryAuthority The recovery authority address for blocked receipts
+    function receivePolicy(address account)
+        external
+        view
+        returns (
+            bool hasReceivePolicy,
+            uint64 senderPolicyId,
+            PolicyType senderPolicyType,
+            uint64 tokenFilterId,
+            PolicyType tokenFilterType,
+            address recoveryAuthority
+        );
+
+    /// @notice Validates an inbound transfer against the receiver's receive policy
+    /// @param token The TIP-20 token being transferred
+    /// @param sender The sender of the transfer
+    /// @param receiver The receiver of the transfer
+    /// @return authorized Whether the transfer is authorized
+    /// @return blockedReason The reason the transfer was blocked (NONE if authorized)
+    function validateReceivePolicy(address token, address sender, address receiver)
+        external
+        view
+        returns (bool authorized, BlockedReason blockedReason);
+
+    /// @notice Sets the caller's receive policy for inbound transfers
+    /// @param senderPolicyId The sender policy ID to use for inbound transfer authorization
+    /// @param tokenFilterId The token filter policy ID
+    /// @param recoveryAuthority The recovery authority address for blocked receipts
+    function setReceivePolicy(uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAuthority) external;
 }
