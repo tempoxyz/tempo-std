@@ -99,8 +99,11 @@ interface IAccountKeychain {
         uint256 remainingLimit
     );
 
-    /// @notice Emitted when a TIP-1053 key-authorization nonce is consumed
-    event KeyAuthorizationNonceConsumed(address indexed account, bytes32 indexed nonce);
+    /// @notice Emitted when a key authorization carries a TIP-1053 witness
+    event KeyAuthorizationWitness(address indexed account, bytes32 indexed witness);
+
+    /// @notice Emitted when a TIP-1053 key-authorization witness is manually burned
+    event KeyAuthorizationWitnessBurned(address indexed account, bytes32 indexed witness);
 
     /*//////////////////////////////////////////////////////////////
                                 ERRORS
@@ -119,8 +122,8 @@ interface IAccountKeychain {
     error SignatureTypeMismatch(uint8 expected, uint8 actual);
     error CallNotAllowed();
     error InvalidCallScope();
-    error InvalidKeyAuthorizationNonce();
-    error KeyAuthorizationNonceAlreadyUsed();
+    error InvalidKeyAuthorizationWitness();
+    error KeyAuthorizationWitnessAlreadyBurned();
     error LegacyAuthorizeKeySelectorChanged(bytes4 newSelector);
 
     /*//////////////////////////////////////////////////////////////
@@ -152,20 +155,20 @@ interface IAccountKeychain {
     function authorizeKey(address keyId, SignatureType signatureType, KeyRestrictions calldata config) external;
 
     /**
-     * @notice Authorize a new key with a TIP-1053 replay nonce
+     * @notice Authorize a new key with a TIP-1053 witness
      * @param keyId The key identifier (address derived from public key)
      * @param signatureType Signature type of the key
      * @param config Access-key expiry and optional limits / call restrictions
-     * @param nonce The per-account key authorization nonce to consume
+     * @param witness The signed witness for offchain context binding
      */
-    function authorizeKey(address keyId, SignatureType signatureType, KeyRestrictions calldata config, bytes32 nonce)
+    function authorizeKey(address keyId, SignatureType signatureType, KeyRestrictions calldata config, bytes32 witness)
         external;
 
     /**
-     * @notice Burn a TIP-1053 key-authorization nonce without authorizing a key
-     * @param nonce The per-account key authorization nonce to consume
+     * @notice Burn a TIP-1053 key-authorization witness without authorizing a key
+     * @param witness The per-account key authorization witness to burn
      */
-    function burnKeyAuthorizationNonce(bytes32 nonce) external;
+    function burnKeyAuthorizationWitness(bytes32 witness) external;
 
     /**
      * @notice Revoke an authorized key
@@ -242,12 +245,12 @@ interface IAccountKeychain {
         returns (bool isScoped, CallScope[] memory scopes);
 
     /**
-     * @notice Returns whether a TIP-1053 key-authorization nonce has been consumed
+     * @notice Returns whether a TIP-1053 key-authorization witness has been manually burned
      * @param account The account address
-     * @param nonce The per-account key authorization nonce
-     * @return used Whether the nonce has been consumed
+     * @param witness The per-account key authorization witness
+     * @return burned Whether the witness has been burned
      */
-    function isKeyAuthorizationNonceUsed(address account, bytes32 nonce) external view returns (bool used);
+    function isKeyAuthorizationWitnessBurned(address account, bytes32 witness) external view returns (bool burned);
 
     /**
      * @notice Get the transaction key used in the current transaction
