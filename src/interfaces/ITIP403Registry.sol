@@ -53,8 +53,8 @@ interface ITIP403Registry {
     /// @notice Error when a receive policy references an unsupported policy type
     error InvalidReceivePolicyType();
 
-    /// @notice Error when a receive policy is set for an invalid account
-    error InvalidReceivePolicyAddress();
+    /// @notice Error when a receive policy has an invalid recovery authority
+    error InvalidRecoveryAuthority();
 
     /// @notice Emitted when a policy's admin is updated
     /// @param policyId The ID of the policy that was updated
