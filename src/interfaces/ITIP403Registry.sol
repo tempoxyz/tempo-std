@@ -14,6 +14,16 @@ interface ITIP403Registry {
         COMPOUND
     }
 
+    /// @notice Reasons an inbound receive policy can block a transfer or mint
+    /// @param NONE The transfer or mint is allowed
+    /// @param TOKEN_FILTER The token filter policy blocked the token
+    /// @param RECEIVE_POLICY The sender receive policy blocked the sender
+    enum BlockedReason {
+        NONE,
+        TOKEN_FILTER,
+        RECEIVE_POLICY
+    }
+
     /// @notice Data structure containing policy configuration
     /// @param policyType The type of policy (whitelist or blacklist)
     /// @param admin The address authorized to modify this policy
@@ -40,6 +50,12 @@ interface ITIP403Registry {
     /// @notice TIP-1022 virtual addresses cannot be used as literal policy members
     error VirtualAddressNotAllowed();
 
+    /// @notice Error when a receive policy references an unsupported policy type
+    error InvalidReceivePolicyType();
+
+    /// @notice Error when a receive policy is set for an invalid account
+    error InvalidReceivePolicyAddress();
+
     /// @notice Emitted when a policy's admin is updated
     /// @param policyId The ID of the policy that was updated
     /// @param updater The address that performed the update
@@ -65,6 +81,15 @@ interface ITIP403Registry {
     /// @param account The account whose blacklist status was changed
     /// @param restricted Whether the account is now restricted (true) or not (false)
     event BlacklistUpdated(uint64 indexed policyId, address indexed updater, address indexed account, bool restricted);
+
+    /// @notice Emitted when an account receive policy is updated
+    /// @param account The account whose receive policy was updated
+    /// @param senderPolicyId Policy ID to check for senders
+    /// @param tokenFilterId Policy ID to check for tokens
+    /// @param recoveryAddress Recovery address authorized to claim blocked funds
+    event ReceivePolicyUpdated(
+        address indexed account, uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAddress
+    );
 
     /// @notice Returns the current policy ID counter
     /// @return The next policy ID that will be assigned to a newly created policy
@@ -118,6 +143,43 @@ interface ITIP403Registry {
     /// @param user The address to check authorization for
     /// @return True if the user is authorized, false otherwise
     function isAuthorized(uint64 policyId, address user) external view returns (bool);
+
+    /// @notice Returns an account's receive policy configuration
+    /// @param account The account whose receive policy is queried
+    /// @return hasReceivePolicy Whether the account has a configured receive policy
+    /// @return senderPolicyId Policy ID checked against senders
+    /// @return senderPolicyType Policy type for the sender policy
+    /// @return tokenFilterId Policy ID checked against tokens
+    /// @return tokenFilterType Policy type for the token filter
+    /// @return recoveryAddress Recovery address authorized to claim blocked funds
+    function receivePolicy(address account)
+        external
+        view
+        returns (
+            bool hasReceivePolicy,
+            uint64 senderPolicyId,
+            PolicyType senderPolicyType,
+            uint64 tokenFilterId,
+            PolicyType tokenFilterType,
+            address recoveryAddress
+        );
+
+    /// @notice Checks whether an inbound transfer or mint is allowed by the receiver's policy
+    /// @param token The TIP-20 token being received
+    /// @param sender The sender or mint originator
+    /// @param receiver The account receiving funds
+    /// @return authorized True when the inbound transfer or mint is allowed
+    /// @return blockedReason The first policy reason that blocks the receive
+    function validateReceivePolicy(address token, address sender, address receiver)
+        external
+        view
+        returns (bool authorized, BlockedReason blockedReason);
+
+    /// @notice Sets the caller's receive policy
+    /// @param senderPolicyId Policy ID to check for senders
+    /// @param tokenFilterId Policy ID to check for tokens
+    /// @param recoveryAddress Recovery address authorized to claim blocked funds
+    function setReceivePolicy(uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAddress) external;
 
     // =========================================================================
     //                      TIP-1015: Compound Policies
