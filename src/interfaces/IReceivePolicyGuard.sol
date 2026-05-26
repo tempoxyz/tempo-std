@@ -18,7 +18,7 @@ interface IReceivePolicyGuard {
     /// @param recoveryAuthority The recovery authority assigned to the blocked receipt
     /// @param originator The original sender (transfer) or issuer (mint)
     /// @param recipient The intended recipient of the blocked inbound
-    /// @param blockedAt The block number at which the inbound was blocked
+    /// @param blockedAt The block timestamp at which the inbound was blocked
     /// @param blockedNonce The guard-scoped nonce assigned to this blocked receipt
     /// @param blockedReason The reason the inbound was blocked
     /// @param kind Whether the blocked inbound was a transfer or mint
