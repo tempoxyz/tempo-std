@@ -52,30 +52,6 @@ interface IReceivePolicyGuard {
     /// @param receipt The ABI-encoded claim receipt
     function burnBlockedReceipt(bytes calldata receipt) external;
 
-    /// @notice Stores a newly blocked inbound transfer or mint receipt
-    /// @param token The TIP-20 token address
-    /// @param originator The sender of the blocked inbound
-    /// @param receiver The receiver whose receive policy blocked the inbound
-    /// @param recipient The intended recipient of the blocked inbound
-    /// @param recoveryAuthority The recovery authority assigned to the blocked receipt
-    /// @param amount The amount of tokens blocked
-    /// @param blockedReason The reason the inbound was blocked
-    /// @param kind Whether the blocked inbound was a transfer or mint
-    /// @param memo Application-specific memo attached to the inbound
-    /// @return blockedNonce The guard-scoped nonce assigned to this blocked receipt
-    /// @return blockedAt The block number at which the inbound was blocked
-    function storeBlocked(
-        address token,
-        address originator,
-        address receiver,
-        address recipient,
-        address recoveryAuthority,
-        uint256 amount,
-        ITIP403Registry.BlockedReason blockedReason,
-        InboundKind kind,
-        bytes32 memo
-    ) external returns (uint64 blockedNonce, uint64 blockedAt);
-
     /// @notice Emitted when an inbound transfer or mint is blocked by a receive policy
     event TransferBlocked(
         address indexed token,
