@@ -434,9 +434,9 @@ library TempoTransactionLib {
         require(sig.length == 65, "Invalid fee payer signature length");
 
         // Parse signature: first 32 bytes = r, next 32 = s, last byte = v
-        bytes32 r;
-        bytes32 s;
-        uint8 v;
+        bytes32 r = bytes32(0);
+        bytes32 s = bytes32(0);
+        uint8 v = 0;
         assembly {
             r := mload(add(sig, 32))
             s := mload(add(sig, 64))
