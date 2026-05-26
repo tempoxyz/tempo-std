@@ -82,6 +82,9 @@ interface IAccountKeychain {
     /// @notice Emitted when a new key is authorized
     event KeyAuthorized(address indexed account, address indexed publicKey, uint8 signatureType, uint64 expiry);
 
+    /// @notice Emitted when a new admin key is authorized
+    event AdminKeyAuthorized(address indexed account, address indexed publicKey);
+
     /// @notice Emitted when a key is revoked
     event KeyRevoked(address indexed account, address indexed publicKey);
 
@@ -122,6 +125,7 @@ interface IAccountKeychain {
     error SignatureTypeMismatch(uint8 expected, uint8 actual);
     error CallNotAllowed();
     error InvalidCallScope();
+    error InvalidKeyId();
     error InvalidKeyAuthorizationWitness();
     error KeyAuthorizationWitnessAlreadyBurned();
     error LegacyAuthorizeKeySelectorChanged(bytes4 newSelector);
@@ -163,6 +167,14 @@ interface IAccountKeychain {
      */
     function authorizeKey(address keyId, SignatureType signatureType, KeyRestrictions calldata config, bytes32 witness)
         external;
+
+    /**
+     * @notice Authorize a new admin key for the caller's account
+     * @param keyId The key identifier (address derived from public key)
+     * @param signatureType Signature type of the admin key
+     * @param witness TIP-1053 key-authorization witness for this authorization
+     */
+    function authorizeAdminKey(address keyId, SignatureType signatureType, bytes32 witness) external;
 
     /**
      * @notice Burn a TIP-1053 key-authorization witness without authorizing a key
@@ -251,6 +263,14 @@ interface IAccountKeychain {
      * @return burned Whether the witness has been burned
      */
     function isKeyAuthorizationWitnessBurned(address account, bytes32 witness) external view returns (bool burned);
+
+    /**
+     * @notice Returns whether a key is the root key or an active admin key for an account
+     * @param account The account address
+     * @param keyId The key ID
+     * @return Whether the key has admin privileges
+     */
+    function isAdminKey(address account, address keyId) external view returns (bool);
 
     /**
      * @notice Get the transaction key used in the current transaction
