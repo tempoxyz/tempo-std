@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity >=0.8.13 <0.9.0;
 
-import {ITIP403Registry} from "./ITIP403Registry.sol";
-
 /// @title The interface for the TIP-1028 receive policy guard
 /// @notice Tracks blocked inbound TIP-20 transfers and mints until claimed or burned
 interface IReceivePolicyGuard {
@@ -33,7 +31,7 @@ interface IReceivePolicyGuard {
         address recipient;
         uint64 blockedAt;
         uint64 blockedNonce;
-        ITIP403Registry.BlockedReason blockedReason;
+        uint8 blockedReason;
         InboundKind kind;
         bytes32 memo;
     }
@@ -52,28 +50,29 @@ interface IReceivePolicyGuard {
     /// @param receipt The ABI-encoded claim receipt
     function burnBlockedReceipt(bytes calldata receipt) external;
 
-    /// @notice Emitted when an inbound transfer or mint is blocked by a receive policy
+    /// @notice Emitted when an inbound TIP-20 transfer or mint is blocked and funds are redirected
+    /// @param token TIP-20 token whose funds are held by the guard
+    /// @param receiver Resolved account where funds would settle; for virtual recipients its their master
+    /// @param blockedNonce Guard nonce assigned to the blocked operation
+    /// @param amount Amount of blocked funds held by the guard
+    /// @param receiptVersion Claim receipt layout version
+    /// @param receipt ABI-encoded receipt witness that can be passed to `claim`
     event TransferBlocked(
         address indexed token,
-        address indexed from,
         address indexed receiver,
-        uint8 receiptVersion,
-        uint64 blockedNonce,
-        uint64 blockedAt,
-        address recipient,
+        uint64 indexed blockedNonce,
         uint256 amount,
-        ITIP403Registry.BlockedReason blockedReason,
-        address recoveryAuthority,
-        bytes32 memo
+        uint8 receiptVersion,
+        bytes receipt
     );
 
-    /// @notice Emitted when a blocked receipt is claimed
+    /// @notice Emitted when blocked funds are claimed with a valid receipt
     event ReceiptClaimed(
         address indexed token,
         address indexed receiver,
-        uint8 receiptVersion,
         uint64 indexed blockedNonce,
         uint64 blockedAt,
+        uint8 receiptVersion,
         address originator,
         address recipient,
         address recoveryAuthority,
@@ -82,25 +81,19 @@ interface IReceivePolicyGuard {
         uint256 amount
     );
 
-    /// @notice Emitted when a blocked receipt is burned
+    /// @notice Emitted when blocked funds are burned with a valid receipt
     event ReceiptBurned(
         address indexed token,
         address indexed receiver,
-        uint8 receiptVersion,
         uint64 indexed blockedNonce,
         uint64 blockedAt,
+        uint8 receiptVersion,
         address originator,
         address recipient,
         address recoveryAuthority,
         address caller,
         uint256 amount
     );
-
-    /// @notice Error when a receive policy references an incompatible policy type
-    error InvalidReceivePolicyType();
-
-    /// @notice Error when the recovery authority address is invalid
-    error InvalidRecoveryAuthority();
 
     /// @notice Error when the claim receipt is invalid or does not match any blocked receipt
     error InvalidReceipt();
