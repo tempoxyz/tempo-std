@@ -12,7 +12,7 @@ import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
 import {ITIP20} from "./interfaces/ITIP20.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
-import {ITIP1028Escrow} from "./interfaces/ITIP1028Escrow.sol";
+import {IReceivePolicyGuard} from "./interfaces/IReceivePolicyGuard.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
 import {IValidatorConfigV2} from "./interfaces/IValidatorConfigV2.sol";
 
@@ -49,9 +49,9 @@ abstract contract Tempo {
     ITIP403Registry public constant tip403Registry = StdPrecompiles.TIP403_REGISTRY;
     address public constant TIP403_REGISTRY = StdPrecompiles.TIP403_REGISTRY_ADDRESS;
 
-    // TIP-1028 escrow precompile
-    ITIP1028Escrow public constant escrow = StdPrecompiles.TIP1028_ESCROW;
-    address public constant ESCROW = StdPrecompiles.ESCROW_ADDRESS;
+    // Receive policy guard precompile
+    IReceivePolicyGuard public constant receivePolicyGuard = StdPrecompiles.RECEIVE_POLICY_GUARD;
+    address public constant RECEIVE_POLICY_GUARD = StdPrecompiles.RECEIVE_POLICY_GUARD_ADDRESS;
 
     // Address registry precompile
     IAddressRegistry public constant addrRegistry = StdPrecompiles.ADDRESS_REGISTRY;

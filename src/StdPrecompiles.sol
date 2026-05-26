@@ -6,7 +6,7 @@ import {IAddressRegistry} from "./interfaces/IAddressRegistry.sol";
 import {IFeeManager} from "./interfaces/IFeeManager.sol";
 import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
-import {ITIP1028Escrow} from "./interfaces/ITIP1028Escrow.sol";
+import {IReceivePolicyGuard} from "./interfaces/IReceivePolicyGuard.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
@@ -27,7 +27,7 @@ library StdPrecompiles {
     address internal constant VALIDATOR_CONFIG_V2_ADDRESS = 0xCcCCCCcC00000000000000000000000000000001;
     address internal constant ADDRESS_REGISTRY_ADDRESS = 0xfDC0000000000000000000000000000000000000;
     address internal constant SIGNATURE_VERIFIER_ADDRESS = 0x5165300000000000000000000000000000000000;
-    address internal constant ESCROW_ADDRESS = 0xE5c0000000000000000000000000000000000000;
+    address internal constant RECEIVE_POLICY_GUARD_ADDRESS = 0xB10C000000000000000000000000000000000000;
 
     IFeeManager internal constant TIP_FEE_MANAGER = IFeeManager(TIP_FEE_MANAGER_ADDRESS);
     ITIP403Registry internal constant TIP403_REGISTRY = ITIP403Registry(TIP403_REGISTRY_ADDRESS);
@@ -39,5 +39,5 @@ library StdPrecompiles {
     IValidatorConfigV2 internal constant VALIDATOR_CONFIG_V2 = IValidatorConfigV2(VALIDATOR_CONFIG_V2_ADDRESS);
     IAddressRegistry internal constant ADDRESS_REGISTRY = IAddressRegistry(ADDRESS_REGISTRY_ADDRESS);
     ISignatureVerifier internal constant SIGNATURE_VERIFIER = ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS);
-    ITIP1028Escrow internal constant TIP1028_ESCROW = ITIP1028Escrow(ESCROW_ADDRESS);
+    IReceivePolicyGuard internal constant RECEIVE_POLICY_GUARD = IReceivePolicyGuard(RECEIVE_POLICY_GUARD_ADDRESS);
 }
