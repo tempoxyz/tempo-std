@@ -72,6 +72,7 @@ interface IStablecoinDEX {
         int16 tick,
         int16 flipTick
     );
+    event FlipFailed(uint128 indexed orderId, address indexed maker, bytes4 reason);
     event OrderPlaced(
         uint128 indexed orderId,
         address indexed maker,
