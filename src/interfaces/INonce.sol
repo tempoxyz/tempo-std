@@ -26,8 +26,8 @@ interface INonce {
     /// @notice Thrown when an expiring nonce has already been used
     error ExpiringNonceReplay();
 
-    /// @notice Thrown when the expiring nonce set is full and cannot accept more entries
-    error ExpiringNonceSetFull();
+    /// @notice Thrown when every cell on the expiring nonce probe path is occupied
+    error ExpiringNonceProbeExhausted();
 
     /// @notice Thrown when the expiry timestamp for an expiring nonce is invalid
     error InvalidExpiringNonceExpiry();
