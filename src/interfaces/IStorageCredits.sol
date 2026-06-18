@@ -1,20 +1,25 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity >=0.8.13 <0.9.0;
 
-/// @title Storage Credits Precompile
-/// @notice Tracks storage credits that can refund, preserve, or directly spend storage-clearing
-/// credits for an account.
-/// @dev Deployed at `StdPrecompiles.STORAGE_CREDITS_ADDRESS`.
-interface IStorageCredits {
-    /// @notice Controls how an account handles storage credits during execution.
+ /// @title Storage Credits Precompile
+ /// @notice Tracks credits earned when accounts clear storage slots.
+ /// @dev Deployed at `StdPrecompiles.STORAGE_CREDITS_ADDRESS`.
+ interface IStorageCredits {
+    /// @notice Transaction-local policy for handling new storage slots.
     enum Mode {
-        /// @notice Refund cleared storage as gas according to the active protocol rules.
+        // Default. Charge gas and apply available credits as refunds at transaction end.
+        // Refund settlement is effectively first-come, first-served across eligible slot creations.
         Refund,
-        /// @notice Preserve cleared storage credits on the account balance.
+
+        // Charge gas for new slots while preserving stored credits.
+        // Contracts can use Preserve, then temporarily enter Direct with a budget, to spend
+        // credits on behalf of a specific user.
         Preserve,
-        /// @notice Spend from the account's storage credit budget before charging gas.
+
+        // Spend stored credits before charging gas for new slots.
         Direct
     }
+}
 
     /// @notice Reverts when the requested mode is not supported by the precompile.
     error InvalidMode();
