@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity >=0.8.13 <0.9.0;
 
- /// @title Storage Credits Precompile
- /// @notice Tracks credits earned when accounts clear storage slots.
- /// @dev Deployed at `StdPrecompiles.STORAGE_CREDITS_ADDRESS`.
- interface IStorageCredits {
+/// @title Storage Credits Precompile
+/// @notice Tracks credits earned when accounts clear storage slots.
+/// @dev Deployed at `StdPrecompiles.STORAGE_CREDITS_ADDRESS`.
+interface IStorageCredits {
     /// @notice Transaction-local policy for handling new storage slots.
     enum Mode {
         // Default. Charge gas and apply available credits as refunds at transaction end.
@@ -19,7 +19,6 @@ pragma solidity >=0.8.13 <0.9.0;
         // Spend stored credits before charging gas for new slots.
         Direct
     }
-}
 
     /// @notice Reverts when the requested mode is not supported by the precompile.
     error InvalidMode();
