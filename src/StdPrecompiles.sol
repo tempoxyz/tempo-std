@@ -9,6 +9,7 @@ import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {IReceivePolicyGuard} from "./interfaces/IReceivePolicyGuard.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
+import {IStorageCredits} from "./interfaces/IStorageCredits.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
 import {IValidatorConfigV2} from "./interfaces/IValidatorConfigV2.sol";
 import {INonce} from "./interfaces/INonce.sol";
@@ -28,6 +29,7 @@ library StdPrecompiles {
     address internal constant ADDRESS_REGISTRY_ADDRESS = 0xfDC0000000000000000000000000000000000000;
     address internal constant SIGNATURE_VERIFIER_ADDRESS = 0x5165300000000000000000000000000000000000;
     address internal constant RECEIVE_POLICY_GUARD_ADDRESS = 0xB10C000000000000000000000000000000000000;
+    address internal constant STORAGE_CREDITS_ADDRESS = 0x1060000000000000000000000000000000000000;
 
     IFeeManager internal constant TIP_FEE_MANAGER = IFeeManager(TIP_FEE_MANAGER_ADDRESS);
     ITIP403Registry internal constant TIP403_REGISTRY = ITIP403Registry(TIP403_REGISTRY_ADDRESS);
@@ -40,4 +42,5 @@ library StdPrecompiles {
     IAddressRegistry internal constant ADDRESS_REGISTRY = IAddressRegistry(ADDRESS_REGISTRY_ADDRESS);
     ISignatureVerifier internal constant SIGNATURE_VERIFIER = ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS);
     IReceivePolicyGuard internal constant RECEIVE_POLICY_GUARD = IReceivePolicyGuard(RECEIVE_POLICY_GUARD_ADDRESS);
+    IStorageCredits internal constant STORAGE_CREDITS = IStorageCredits(STORAGE_CREDITS_ADDRESS);
 }

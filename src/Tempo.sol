@@ -9,6 +9,7 @@ import {IFeeManager} from "./interfaces/IFeeManager.sol";
 import {INonce} from "./interfaces/INonce.sol";
 import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
 import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
+import {IStorageCredits} from "./interfaces/IStorageCredits.sol";
 import {ITIP20} from "./interfaces/ITIP20.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
@@ -28,6 +29,10 @@ abstract contract Tempo {
     // Stablecoin DEX precompile
     IStablecoinDEX public constant stableDEX = StdPrecompiles.STABLECOIN_DEX;
     address public constant STABLE_DEX = StdPrecompiles.STABLECOIN_DEX_ADDRESS;
+
+    // Storage credits precompile
+    IStorageCredits public constant storageCredits = StdPrecompiles.STORAGE_CREDITS;
+    address public constant STORAGE_CREDITS = StdPrecompiles.STORAGE_CREDITS_ADDRESS;
 
     // Fee manager precompile
     IFeeManager public constant feeAMM = StdPrecompiles.TIP_FEE_MANAGER;

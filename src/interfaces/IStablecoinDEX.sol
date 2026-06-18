@@ -103,6 +103,8 @@ interface IStablecoinDEX {
 
     function balanceOf(address user, address token) external view returns (uint128);
 
+    function storageCredits(address user) external view returns (uint64 credits);
+
     function books(bytes32 pairKey)
         external
         view
