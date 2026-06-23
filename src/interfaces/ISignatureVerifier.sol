@@ -39,8 +39,5 @@ interface ISignatureVerifier {
     /// @dev Does not compare the inner signature type against the stored key type.
     /// @dev Selector-gated to the T6 hardfork; reverts as an unknown selector before T6.
     /// @return True if the recovered key is account or an active admin key on account.
-    function verifyKeychainAdmin(address account, bytes32 hash, bytes calldata signature)
-        external
-        view
-        returns (bool);
+    function verifyKeychainAdmin(address account, bytes32 hash, bytes calldata signature) external view returns (bool);
 }
