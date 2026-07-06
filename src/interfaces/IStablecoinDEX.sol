@@ -58,6 +58,7 @@ interface IStablecoinDEX {
     error BelowMinimumOrderSize(uint128 amount);
     error InvalidBaseToken();
     error OrderNotStale();
+    error IndexAlreadySet();
 
     event OrderCancelled(uint128 indexed orderId);
     event OrderFilled(
@@ -105,6 +106,10 @@ interface IStablecoinDEX {
 
     function storageCredits(address user) external view returns (uint64 credits);
 
+    function bookIndexForKey(bytes32 key) external view returns (bool isSet, uint32 index);
+
+    function bookKeyForIndex(uint32 index) external view returns (bytes32 key);
+
     function books(bytes32 pairKey)
         external
         view
@@ -132,6 +137,8 @@ interface IStablecoinDEX {
         returns (uint128 orderId);
 
     function priceToTick(uint32 price) external pure returns (int16 tick);
+
+    function setBookIndex(uint32 index) external;
 
     function quoteSwapExactAmountIn(address tokenIn, address tokenOut, uint128 amountIn)
         external
