@@ -62,10 +62,10 @@ library TxRlp {
         if (len == 1 && uint8(str[0]) < 0x80) {
             return str;
         } else if (len <= 55) {
-            return bytes.concat(bytes1(uint8((0x80 + len) & 0xff)), str);
+            return abi.encodePacked(bytes1(uint8((0x80 + len) & 0xff)), str);
         } else {
             bytes memory lenBytes = encodeLength(len);
-            return bytes.concat(bytes1(uint8((0xb7 + lenBytes.length) & 0xff)), lenBytes, str);
+            return abi.encodePacked(bytes1(uint8((0xb7 + lenBytes.length) & 0xff)), lenBytes, str);
         }
     }
 
@@ -92,10 +92,10 @@ library TxRlp {
     function prependListPrefix(bytes memory payload) internal pure returns (bytes memory) {
         uint256 len = payload.length;
         if (len <= 55) {
-            return bytes.concat(bytes1(uint8((0xc0 + len) & 0xff)), payload);
+            return abi.encodePacked(bytes1(uint8((0xc0 + len) & 0xff)), payload);
         } else {
             bytes memory lenBytes = encodeLength(len);
-            return bytes.concat(bytes1(uint8((0xf7 + lenBytes.length) & 0xff)), lenBytes, payload);
+            return abi.encodePacked(bytes1(uint8((0xf7 + lenBytes.length) & 0xff)), lenBytes, payload);
         }
     }
 
