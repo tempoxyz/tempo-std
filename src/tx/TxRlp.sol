@@ -62,9 +62,13 @@ library TxRlp {
         if (len == 1 && uint8(str[0]) < 0x80) {
             return str;
         } else if (len <= 55) {
+            // Safe: the fixed-width prefix frames the single dynamic RLP payload.
+            // forge-lint: disable-next-line(encode-packed-collision)
             return abi.encodePacked(bytes1(uint8((0x80 + len) & 0xff)), str);
         } else {
             bytes memory lenBytes = encodeLength(len);
+            // Safe: the prefix encodes lenBytes' width and lenBytes encodes str's width.
+            // forge-lint: disable-next-line(encode-packed-collision)
             return abi.encodePacked(bytes1(uint8((0xb7 + lenBytes.length) & 0xff)), lenBytes, str);
         }
     }
@@ -92,9 +96,13 @@ library TxRlp {
     function prependListPrefix(bytes memory payload) internal pure returns (bytes memory) {
         uint256 len = payload.length;
         if (len <= 55) {
+            // Safe: the fixed-width prefix frames the single dynamic RLP payload.
+            // forge-lint: disable-next-line(encode-packed-collision)
             return abi.encodePacked(bytes1(uint8((0xc0 + len) & 0xff)), payload);
         } else {
             bytes memory lenBytes = encodeLength(len);
+            // Safe: the prefix encodes lenBytes' width and lenBytes encodes payload's width.
+            // forge-lint: disable-next-line(encode-packed-collision)
             return abi.encodePacked(bytes1(uint8((0xf7 + lenBytes.length) & 0xff)), lenBytes, payload);
         }
     }

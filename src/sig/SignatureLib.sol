@@ -137,7 +137,11 @@ library SignatureLib {
         bytes memory authData = abi.encodePacked(rpIdHash, WEBAUTHN_FLAG_UP, bytes4(0));
         string memory challengeB64 = base64UrlEncode(abi.encodePacked(challenge));
         bytes memory clientDataJSON =
-            abi.encodePacked('{"type":"webauthn.get","challenge":"', challengeB64, '","origin":"', origin, '"}');
+        // Safe: fixed JSON delimiters frame both dynamic strings unambiguously.
+        // forge-lint: disable-next-line(encode-packed-collision)
+        abi.encodePacked('{"type":"webauthn.get","challenge":"', challengeB64, '","origin":"', origin, '"}');
+        // Safe: authData is always exactly 37 bytes, so the boundary is unambiguous.
+        // forge-lint: disable-next-line(encode-packed-collision)
         return abi.encodePacked(authData, clientDataJSON);
     }
 
