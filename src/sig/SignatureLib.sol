@@ -136,13 +136,14 @@ library SignatureLib {
         bytes32 rpIdHash = sha256(bytes(rpId));
         bytes memory authData = abi.encodePacked(rpIdHash, WEBAUTHN_FLAG_UP, bytes4(0));
         string memory challengeB64 = base64UrlEncode(abi.encodePacked(challenge));
-        bytes memory clientDataJSON =
-        // Safe: fixed JSON delimiters frame both dynamic strings unambiguously.
-        // forge-lint: disable-next-line(encode-packed-collision)
-        abi.encodePacked('{"type":"webauthn.get","challenge":"', challengeB64, '","origin":"', origin, '"}');
-        // Safe: authData is always exactly 37 bytes, so the boundary is unambiguous.
-        // forge-lint: disable-next-line(encode-packed-collision)
-        return abi.encodePacked(authData, clientDataJSON);
+        bytes memory clientDataJSON = bytes.concat(
+            bytes('{"type":"webauthn.get","challenge":"'),
+            bytes(challengeB64),
+            bytes('","origin":"'),
+            bytes(origin),
+            bytes('"}')
+        );
+        return bytes.concat(authData, clientDataJSON);
     }
 
     /// @notice Computes the P256 message hash signed by a WebAuthn assertion.
