@@ -3,6 +3,7 @@ pragma solidity >=0.8.13 <0.9.0;
 
 import {IAccountKeychain} from "./interfaces/IAccountKeychain.sol";
 import {IAddressRegistry} from "./interfaces/IAddressRegistry.sol";
+import {ICurrentCommittee} from "./interfaces/ICurrentCommittee.sol";
 import {IFeeManager} from "./interfaces/IFeeManager.sol";
 import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
@@ -30,6 +31,7 @@ library StdPrecompiles {
     address internal constant SIGNATURE_VERIFIER_ADDRESS = 0x5165300000000000000000000000000000000000;
     address internal constant RECEIVE_POLICY_GUARD_ADDRESS = 0xB10C000000000000000000000000000000000000;
     address internal constant STORAGE_CREDITS_ADDRESS = 0x1060000000000000000000000000000000000000;
+    address internal constant CURRENT_COMMITTEE_ADDRESS = 0xC077e00000000000000000000000000000000000;
 
     IFeeManager internal constant TIP_FEE_MANAGER = IFeeManager(TIP_FEE_MANAGER_ADDRESS);
     ITIP403Registry internal constant TIP403_REGISTRY = ITIP403Registry(TIP403_REGISTRY_ADDRESS);
@@ -43,4 +45,5 @@ library StdPrecompiles {
     ISignatureVerifier internal constant SIGNATURE_VERIFIER = ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS);
     IReceivePolicyGuard internal constant RECEIVE_POLICY_GUARD = IReceivePolicyGuard(RECEIVE_POLICY_GUARD_ADDRESS);
     IStorageCredits internal constant STORAGE_CREDITS = IStorageCredits(STORAGE_CREDITS_ADDRESS);
+    ICurrentCommittee internal constant CURRENT_COMMITTEE = ICurrentCommittee(CURRENT_COMMITTEE_ADDRESS);
 }
