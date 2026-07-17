@@ -91,6 +91,17 @@ interface ITIP403Registry {
     /// @return True if the policy exists, false otherwise
     function policyExists(uint64 policyId) external view returns (bool);
 
+    /// @notice Returns the effective transfer policy for a TIP-20 token
+    /// @param token The TIP-20 token to query
+    /// @return isSet Whether TIP-403 stores the token's policy binding
+    /// @return policyId The registry binding, or the legacy token-local policy ID when unset
+    function tokenTransferPolicyId(address token) external view returns (bool isSet, uint64 policyId);
+
+    /// @notice Migrates legacy token-local policy IDs into TIP-403
+    /// @param tokens The TIP-20 tokens to migrate
+    /// @return migrated The number of bindings created
+    function migrateTransferPolicyIds(address[] calldata tokens) external returns (uint256 migrated);
+
     /// @notice Returns the policy data for a given policy ID
     /// @param policyId The ID of the policy to query
     /// @return policyType The type of the policy (whitelist or blacklist)
