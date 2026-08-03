@@ -5,6 +5,7 @@ import {StdPrecompiles} from "./StdPrecompiles.sol";
 import {StdTokens} from "./StdTokens.sol";
 import {IAccountKeychain} from "./interfaces/IAccountKeychain.sol";
 import {IAddressRegistry} from "./interfaces/IAddressRegistry.sol";
+import {ICurrentCommittee} from "./interfaces/ICurrentCommittee.sol";
 import {IFeeManager} from "./interfaces/IFeeManager.sol";
 import {INonce} from "./interfaces/INonce.sol";
 import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
@@ -33,6 +34,10 @@ abstract contract Tempo {
     // Storage credits precompile
     IStorageCredits public constant storageCredits = StdPrecompiles.STORAGE_CREDITS;
     address public constant STORAGE_CREDITS = StdPrecompiles.STORAGE_CREDITS_ADDRESS;
+
+    // Current committee precompile
+    ICurrentCommittee public constant currentCommittee = StdPrecompiles.CURRENT_COMMITTEE;
+    address public constant CURRENT_COMMITTEE = StdPrecompiles.CURRENT_COMMITTEE_ADDRESS;
 
     // Fee manager precompile
     IFeeManager public constant feeAMM = StdPrecompiles.TIP_FEE_MANAGER;

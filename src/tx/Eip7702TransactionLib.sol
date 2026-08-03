@@ -41,6 +41,9 @@ library Eip7702TransactionLib {
 
     /// @notice Creates a new EIP-7702 transaction with default values.
     function create() internal view returns (Eip7702Transaction memory tx_) {
+        require(block.chainid <= type(uint64).max, "chain ID exceeds uint64");
+        // Safe after the explicit range check above.
+        // forge-lint: disable-next-line(unsafe-typecast)
         tx_.chainId = uint64(block.chainid);
         tx_.gasLimit = 21000;
     }
