@@ -111,9 +111,9 @@ interface IStablecoinDEX {
         view
         returns (address base, address quote, int16 bestBidTick, int16 bestAskTick);
 
-    function bookIndexForKey(bytes32 key) external view returns (bool exists, uint32 index);
+    function bookIndexForKey(bytes32 bookKey) external view returns (bool exists, uint32 index);
 
-    function bookKeyForIndex(uint32 index) external view returns (bytes32 key);
+    function bookKeyForIndex(uint32 index) external view returns (bytes32 bookKey);
 
     function cancel(uint128 orderId) external;
 

@@ -66,11 +66,11 @@ interface IFeeAMM {
         external
         returns (uint256 liquidity);
 
-    function pools(bytes32) external view returns (uint128 reserveUserToken, uint128 reserveValidatorToken);
+    function pools(bytes32 poolId) external view returns (uint128 reserveUserToken, uint128 reserveValidatorToken);
 
     function rebalanceSwap(address userToken, address validatorToken, uint256 amountOut, address to)
         external
         returns (uint256 amountIn);
 
-    function totalSupply(bytes32) external view returns (uint256);
+    function totalSupply(bytes32 poolId) external view returns (uint256);
 }
