@@ -60,7 +60,7 @@ interface IFeeAMM {
 
     function getPoolId(address userToken, address validatorToken) external pure returns (bytes32);
 
-    function liquidityBalances(bytes32, address) external view returns (uint256);
+    function liquidityBalances(bytes32 poolId, address user) external view returns (uint256);
 
     function mint(address userToken, address validatorToken, uint256 amountValidatorToken, address to)
         external
