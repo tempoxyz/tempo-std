@@ -204,6 +204,13 @@ interface IAccountKeychain {
     function setAllowedCalls(address keyId, CallScope[] calldata scopes) external;
 
     /**
+     * @notice Set or replace allowed calls from canonical RLP-encoded scopes
+     * @param keyId The key ID to configure
+     * @param scopes The RLP-encoded call scopes to set
+     */
+    function setAllowedCalls(address keyId, bytes calldata scopes) external;
+
+    /**
      * @notice Remove any configured call scope for a key+target pair
      * @param keyId The key ID to update
      * @param target The target contract to remove from allowed calls
