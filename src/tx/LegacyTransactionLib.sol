@@ -72,7 +72,7 @@ library LegacyTransactionLib {
         return self;
     }
 
-    /// @notice RLP encodes the unsigned transaction (6 fields).
+    /// @notice RLP encodes the unsigned transaction (6 fields pre-EIP-155).
     /// @dev Legacy transactions have no type prefix.
     function encode(LegacyTransaction memory self, VmRlp vm) internal pure returns (bytes memory) {
         bytes[] memory items = new bytes[](6);
@@ -86,9 +86,26 @@ library LegacyTransactionLib {
         return TxRlp.encodeList(vm, items);
     }
 
+    /// @notice RLP encodes the unsigned EIP-155 transaction with replay protection (9 fields).
+    /// @dev Format: RLP([nonce, gasPrice, gasLimit, to, value, data, chainId, 0, 0])
+    function encode(LegacyTransaction memory self, VmRlp vm, uint64 chainId) internal pure returns (bytes memory) {
+        bytes[] memory items = new bytes[](9);
+        items[0] = TxRlp.encodeUint(self.nonce);
+        items[1] = TxRlp.encodeUint(self.gasPrice);
+        items[2] = TxRlp.encodeUint(self.gasLimit);
+        items[3] = self.to == address(0) ? TxRlp.encodeNone() : TxRlp.encodeAddress(self.to);
+        items[4] = TxRlp.encodeUint(self.value);
+        items[5] = self.data;
+        items[6] = TxRlp.encodeUint(chainId);
+        items[7] = TxRlp.encodeUint(0);
+        items[8] = TxRlp.encodeUint(0);
+
+        return TxRlp.encodeList(vm, items);
+    }
+
     /// @notice RLP encodes the signed transaction (9 fields).
-    /// @dev Legacy transactions have no type prefix.
-    function encodeWithSignature(LegacyTransaction memory self, VmRlp vm, uint8 v, bytes32 r, bytes32 s)
+    /// @dev Legacy transactions have no type prefix. `v` is uint256 to support EIP-155 chain IDs.
+    function encodeWithSignature(LegacyTransaction memory self, VmRlp vm, uint256 v, bytes32 r, bytes32 s)
         internal
         pure
         returns (bytes memory)
