@@ -52,6 +52,9 @@ library TempoTransactionLib {
     /// @notice Tempo transaction type prefix.
     uint8 internal constant TX_TYPE = 0x76;
 
+    /// @notice Thrown when a fee payer signature is not exactly 65 bytes.
+    error InvalidFeePayerSignatureLength();
+
     /// @notice Creates a new Tempo transaction with default values.
     function create() internal pure returns (TempoTransaction memory tx_) {
         tx_.gasLimit = 21000;
@@ -431,7 +434,7 @@ library TempoTransactionLib {
 
     /// @notice Encodes fee payer signature as RLP list [v, r, s]
     function _encodeFeePayerSignature(bytes memory sig) private pure returns (bytes memory) {
-        require(sig.length == 65, "Invalid fee payer signature length");
+        if (sig.length != 65) revert InvalidFeePayerSignatureLength();
 
         // Parse signature: first 32 bytes = r, next 32 = s, last byte = v
         bytes32 r = bytes32(0);
