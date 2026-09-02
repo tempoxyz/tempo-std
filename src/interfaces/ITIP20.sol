@@ -183,7 +183,7 @@ interface ITIP20 is ITIP20RolesAuthErr {
 
     function setNextQuoteToken(ITIP20 newQuoteToken) external;
 
-    function setRewardRecipient(address newRewardRecipient) external;
+    function setRewardRecipient(address recipient) external;
 
     function setSupplyCap(uint256 newSupplyCap) external;
 
@@ -233,7 +233,7 @@ interface ITIP20 is ITIP20RolesAuthErr {
     /// @notice Unpauses the contract, allowing transfers and other operations to resume.
     function unpause() external;
 
-    function userRewardInfo(address)
+    function userRewardInfo(address account)
         external
         view
         returns (address rewardRecipient, uint256 rewardPerToken, uint256 rewardBalance);

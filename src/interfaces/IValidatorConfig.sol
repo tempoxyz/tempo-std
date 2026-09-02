@@ -35,7 +35,7 @@ interface IValidatorConfig {
     /// @param publicKey The validator's communication public key
     /// @param active Whether the validator is active in consensus
     /// @param index The validator's index in the validators array
-    /// @param validatorAddress The validator's address
+    /// @param validator The validator's address
     /// @param inboundAddress Address where other validators can connect to this validator (format: `<hostname|ip>:<port>`)
     /// @param outboundAddress IP address for firewall whitelisting by other validators (format: `<ip>:<port>`)
     struct Validator {
@@ -56,17 +56,17 @@ interface IValidatorConfig {
     /// @return publicKey The validator's communication public key
     /// @return active Whether the validator is active
     /// @return index The validator's index
-    /// @return addr The validator's address
+    /// @return validatorAddress The validator's address
     /// @return inboundAddress The validator's inbound address
     /// @return outboundAddress The validator's outbound address
-    function validators(address validatorAddress)
+    function validators(address validator)
         external
         view
         returns (
             bytes32 publicKey,
             bool active,
             uint64 index,
-            address addr,
+            address validatorAddress,
             string memory inboundAddress,
             string memory outboundAddress
         );
