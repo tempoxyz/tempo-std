@@ -56,7 +56,10 @@ contract KeyAuthorizationLibTest {
 
         KeyAuthorization memory authorization = KeyAuthorizationLib.create(
                 4217, IAccountKeychain.SignatureType.P256, KEY
-            ).withExpiry(1000).withLimits(limits).withAllowedCalls(scopes)
+            )
+            .withExpiry(1000)
+            .withLimits(limits)
+            .withAllowedCalls(scopes)
             .withWitness(bytes32(uint256(0x5555555555555555555555555555555555555555555555555555555555555555)))
             .asAdmin(ACCOUNT);
 
