@@ -191,7 +191,8 @@ library TempoTransactionLib {
         return self;
     }
 
-    /// @notice Sets the key authorization.
+    /// @notice Sets a canonical RLP-encoded `SignedKeyAuthorization`.
+    /// @dev Use `KeyAuthorizationLib.sign` or `KeyAuthorizationLib.encodeSigned` to create it.
     function withKeyAuthorization(TempoTransaction memory self, bytes memory keyAuthorization)
         internal
         pure
@@ -238,7 +239,7 @@ library TempoTransactionLib {
 
         // Key authorization is truly optional (no bytes if not present)
         if (self.hasKeyAuthorization) {
-            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+            fields[13] = self.keyAuthorization;
         }
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
@@ -277,7 +278,7 @@ library TempoTransactionLib {
 
         uint256 sigFieldIdx;
         if (self.hasKeyAuthorization) {
-            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+            fields[13] = self.keyAuthorization;
             sigFieldIdx = 14;
         } else {
             sigFieldIdx = 13;
@@ -329,7 +330,7 @@ library TempoTransactionLib {
         fields[12] = _encodeAuthorizationList(self.authorizationList);
 
         if (self.hasKeyAuthorization) {
-            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+            fields[13] = self.keyAuthorization;
         }
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
@@ -366,7 +367,7 @@ library TempoTransactionLib {
         fields[12] = _encodeAuthorizationList(self.authorizationList);
 
         if (self.hasKeyAuthorization) {
-            fields[13] = TxRlp.encodeString(self.keyAuthorization);
+            fields[13] = self.keyAuthorization;
         }
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);

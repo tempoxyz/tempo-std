@@ -96,6 +96,7 @@ src
     ├── <a href="./src/tx/AccessListTypes.sol">AccessListTypes.sol</a>: EIP-2930 access list types
     ├── <a href="./src/tx/Eip1559TransactionLib.sol">Eip1559TransactionLib.sol</a>: EIP-1559 (type 2) transaction builder
     ├── <a href="./src/tx/Eip7702TransactionLib.sol">Eip7702TransactionLib.sol</a>: EIP-7702 (type 4) transaction builder with authorization support
+    ├── <a href="./src/tx/KeyAuthorizationLib.sol">KeyAuthorizationLib.sol</a>: TIP-1099 access-key authorization builder, canonical RLP encoder, and Foundry signer
     ├── <a href="./src/tx/LegacyTransactionLib.sol">LegacyTransactionLib.sol</a>: Legacy (type 0) transaction builder
     ├── <a href="./src/tx/TempoTransactionLib.sol">TempoTransactionLib.sol</a>: Tempo (type 0x76) transaction builder with batch calls, 2D nonces, and fee payer support
     └── <a href="./src/tx/TxRlp.sol">TxRlp.sol</a>: RLP encoding helpers for transaction builders
