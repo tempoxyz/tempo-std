@@ -1,0 +1,13 @@
+[package]
+name = "tempo-std-interop"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+tempo-primitives = { git = "https://github.com/tempoxyz/tempo", rev = "07761a78a4ac00988533aa8acbcb6667786b625d", default-features = false, features = ["std"] }
+alloy-consensus = "2.4.1"
+alloy-eips = "2.4.1"
+alloy-primitives = "1.7.2"
+alloy-rlp = "0.3.16"
+serde_json = "1"
