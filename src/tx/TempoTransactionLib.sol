@@ -3,6 +3,7 @@ pragma solidity >=0.8.13 <0.9.0;
 
 import {VmRlp} from "../StdVm.sol";
 import {TxRlp} from "./TxRlp.sol";
+import {KeyAuthorizationRlp} from "./KeyAuthorizationRlp.sol";
 import {AccessListItem} from "./AccessListTypes.sol";
 
 /// @notice A single call in a Tempo transaction batch.
@@ -193,11 +194,13 @@ library TempoTransactionLib {
 
     /// @notice Sets a canonical RLP-encoded `SignedKeyAuthorization`.
     /// @dev Use `KeyAuthorizationLib.sign` or `KeyAuthorizationLib.encodeSigned` to create it.
+    ///      Validates the wire structure; signature recovery and state checks belong to the node.
     function withKeyAuthorization(TempoTransaction memory self, bytes memory keyAuthorization)
         internal
         pure
         returns (TempoTransaction memory)
     {
+        KeyAuthorizationRlp.validate(keyAuthorization);
         self.hasKeyAuthorization = true;
         self.keyAuthorization = keyAuthorization;
         return self;
@@ -239,7 +242,7 @@ library TempoTransactionLib {
 
         // Key authorization is truly optional (no bytes if not present)
         if (self.hasKeyAuthorization) {
-            fields[13] = self.keyAuthorization;
+            fields[13] = _validatedKeyAuthorization(self);
         }
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
@@ -278,7 +281,7 @@ library TempoTransactionLib {
 
         uint256 sigFieldIdx;
         if (self.hasKeyAuthorization) {
-            fields[13] = self.keyAuthorization;
+            fields[13] = _validatedKeyAuthorization(self);
             sigFieldIdx = 14;
         } else {
             sigFieldIdx = 13;
@@ -330,7 +333,7 @@ library TempoTransactionLib {
         fields[12] = _encodeAuthorizationList(self.authorizationList);
 
         if (self.hasKeyAuthorization) {
-            fields[13] = self.keyAuthorization;
+            fields[13] = _validatedKeyAuthorization(self);
         }
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
@@ -367,7 +370,7 @@ library TempoTransactionLib {
         fields[12] = _encodeAuthorizationList(self.authorizationList);
 
         if (self.hasKeyAuthorization) {
-            fields[13] = self.keyAuthorization;
+            fields[13] = _validatedKeyAuthorization(self);
         }
 
         bytes memory rlpPayload = TxRlp.encodeRawList(fields);
@@ -453,6 +456,11 @@ library TempoTransactionLib {
         sigFields[1] = TxRlp.encodeString(TxRlp.encodeBytes32(r));
         sigFields[2] = TxRlp.encodeString(TxRlp.encodeBytes32(s));
         return TxRlp.encodeRawList(sigFields);
+    }
+
+    function _validatedKeyAuthorization(TempoTransaction memory self) private pure returns (bytes memory) {
+        KeyAuthorizationRlp.validate(self.keyAuthorization);
+        return self.keyAuthorization;
     }
 
     // ============ Legacy function signatures for backwards compatibility ============

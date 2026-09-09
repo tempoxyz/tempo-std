@@ -5,7 +5,7 @@ import {IAccountKeychain} from "../interfaces/IAccountKeychain.sol";
 import {SignatureLib} from "../sig/SignatureLib.sol";
 import {TxRlp} from "./TxRlp.sol";
 
-/// @notice A TIP-1099 authorization for provisioning an access key through a Tempo transaction.
+/// @notice An authorization for provisioning an access key through a Tempo transaction.
 /// @dev Optional fields are represented explicitly so `None` remains distinct from an empty list
 ///      and a zero-valued witness remains distinct from an absent witness.
 struct KeyAuthorization {
@@ -25,7 +25,7 @@ struct KeyAuthorization {
     address account;
 }
 
-/// @title Builder, RLP encoder, and Foundry signer for TIP-1099 key authorizations.
+/// @title Builder, RLP encoder, and Foundry signer for Tempo key authorizations.
 /// @dev The wire format matches Tempo's `KeyAuthorization` and `SignedKeyAuthorization` types:
 ///      `[chain_id, key_type, key_id, expiry?, limits?, allowed_calls?, witness?, is_admin?, account?]`
 ///      and `[authorization, signature]` respectively. Optional trailing fields are omitted
@@ -51,6 +51,10 @@ library KeyAuthorizationLib {
         address keyId,
         IAccountKeychain.KeyRestrictions memory restrictions
     ) internal pure returns (KeyAuthorization memory authorization) {
+        require(
+            !restrictions.allowAnyCalls || restrictions.allowedCalls.length == 0,
+            "KeyAuthorizationLib: contradictory call scopes"
+        );
         authorization = create(chainId, keyType, keyId);
         if (restrictions.expiry != type(uint64).max) {
             authorization = withExpiry(authorization, restrictions.expiry);
@@ -121,6 +125,7 @@ library KeyAuthorizationLib {
 
     /// @notice Returns the canonical RLP encoding signed by a key-authorization signer.
     function encode(KeyAuthorization memory self) internal pure returns (bytes memory) {
+        require(!self.hasExpiry || self.expiry != 0, "KeyAuthorizationLib: zero expiry");
         uint256 fieldCount = _fieldCount(self);
         bytes[] memory fields = new bytes[](fieldCount);
         fields[0] = TxRlp.encodeString(TxRlp.encodeUint(self.chainId));

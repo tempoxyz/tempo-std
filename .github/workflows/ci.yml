@@ -93,6 +93,23 @@ jobs:
       - run: forge --version
       - run: forge test -vvv
 
+  interop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: tempoxyz/gh-actions/actions/setup-foundry@16356ec5155405ba5e33f5558e80b5bf77eb70ab # main
+        with:
+          version: stable
+      - run: |
+          rustup toolchain install stable nightly --profile minimal
+          rustup default nightly
+          cargo +stable run --locked --manifest-path test/interop/Cargo.toml
+
   fmt:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -124,6 +141,7 @@ jobs:
       - build-matrix
       - build
       - test
+      - interop
       - fmt
       - typos
     timeout-minutes: 10
