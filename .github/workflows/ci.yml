@@ -20,9 +20,12 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
+      id-token: write
     outputs:
       matrix: ${{ steps.generate.outputs.matrix }}
     steps:
+      - name: Secure runner
+        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
       - id: generate
         run: |
           MINIMUM="${{ env.SOLC_MINIMUM }}"
@@ -58,10 +61,13 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.build-matrix.outputs.matrix) }}
     steps:
+      - name: Secure runner
+        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -70,7 +76,9 @@ jobs:
           version: ${{ matrix.toolchain }}
       - run: forge --version
       # 3805: "This is a pre-release compiler version, please do not use it in production."
-      - run: forge build --skip test --deny warnings ${{ matrix.prerelease && '--ignored-error-codes 3805' || '' }} ${FORGE_FLAGS}
+      - run: |
+          # shellcheck disable=SC2086 # Intentional word splitting for argument lists.
+          forge build --skip test --deny warnings ${{ matrix.prerelease && '--ignored-error-codes 3805' || '' }} ${FORGE_FLAGS}
         env:
           FORGE_FLAGS: ${{ matrix.flags }}
 
@@ -79,11 +87,14 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
         toolchain: [stable, nightly]
     steps:
+      - name: Secure runner
+        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -98,7 +109,10 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      id-token: write
     steps:
+      - name: Secure runner
+        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -115,7 +129,10 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      id-token: write
     steps:
+      - name: Secure runner
+        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -128,7 +145,10 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      id-token: write
     steps:
+      - name: Secure runner
+        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -145,7 +165,11 @@ jobs:
       - fmt
       - typos
     timeout-minutes: 10
+    permissions:
+      id-token: write
     steps:
+      - name: Secure runner
+        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
       - name: Decide whether the needed jobs succeeded or failed
         uses: tempoxyz/gh-actions/actions/check-needs@ab45d76f6e7420a094281a22aee1973ecc0754f8
         with:
