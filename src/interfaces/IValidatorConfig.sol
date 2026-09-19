@@ -52,24 +52,9 @@ interface IValidatorConfig {
     function validatorCount() external view returns (uint64);
 
     /// @notice Get validator info by address
-    /// @param validatorAddress The validator's address
-    /// @return publicKey The validator's communication public key
-    /// @return active Whether the validator is active
-    /// @return index The validator's index
-    /// @return validatorAddress The validator's address
-    /// @return inboundAddress The validator's inbound address
-    /// @return outboundAddress The validator's outbound address
-    function validators(address validator)
-        external
-        view
-        returns (
-            bytes32 publicKey,
-            bool active,
-            uint64 index,
-            address validatorAddress,
-            string memory inboundAddress,
-            string memory outboundAddress
-        );
+    /// @param validator The validator's address
+    /// @return The validator's information
+    function validators(address validator) external view returns (Validator memory);
 
     /// @notice Get validator address at a given array index
     /// @param index The index in the validators array
