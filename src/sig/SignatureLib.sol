@@ -46,6 +46,13 @@ library SignatureLib {
     uint8 internal constant WEBAUTHN_FLAG_UV = 0x04; // user verified
 
     /*//////////////////////////////////////////////////////////////
+                                   ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when `webauthnData` is shorter than the 37-byte authenticatorData prefix.
+    error WebAuthnDataTooShort();
+
+    /*//////////////////////////////////////////////////////////////
                               LOW-S NORMALIZATION
     //////////////////////////////////////////////////////////////*/
 
@@ -150,7 +157,7 @@ library SignatureLib {
     /// @dev `sha256(authenticatorData || sha256(clientDataJSON))`.
     function webAuthnMessageHash(bytes memory webauthnData) internal pure returns (bytes32) {
         // First 37 bytes are authenticatorData (no extensions, since the precompile rejects ED).
-        require(webauthnData.length >= 37, "SignatureLib: webauthnData too short");
+        if (webauthnData.length < 37) revert WebAuthnDataTooShort();
         bytes memory authData = new bytes(37);
         bytes memory clientDataJSON = new bytes(webauthnData.length - 37);
         for (uint256 i = 0; i < 37; i++) {
