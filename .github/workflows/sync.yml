@@ -16,7 +16,7 @@ jobs:
     if: startsWith(github.event.release.tag_name, 'v0')
     steps:
       - name: Secure runner
-        uses: tempoxyz/gh-actions/actions/secure-runner@05c669ce878b8719779a28fe7375ba85822403f8 # main
+        uses: tempoxyz/gh-actions/actions/secure-runner@0a60d757d0f4725a34f22f7b9ebf7b91b4b00bcf # main
       - name: Check out the repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
