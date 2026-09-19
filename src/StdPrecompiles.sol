@@ -9,6 +9,7 @@ import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {IReceivePolicyGuard} from "./interfaces/IReceivePolicyGuard.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
+import {ITIP20ChannelReserve} from "./interfaces/ITIP20ChannelReserve.sol";
 import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
 import {IStorageCredits} from "./interfaces/IStorageCredits.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
@@ -29,6 +30,7 @@ library StdPrecompiles {
     address internal constant VALIDATOR_CONFIG_V2_ADDRESS = 0xCcCCCCcC00000000000000000000000000000001;
     address internal constant ADDRESS_REGISTRY_ADDRESS = 0xfDC0000000000000000000000000000000000000;
     address internal constant SIGNATURE_VERIFIER_ADDRESS = 0x5165300000000000000000000000000000000000;
+    address internal constant TIP20_CHANNEL_RESERVE_ADDRESS = 0x4d50500000000000000000000000000000000000;
     address internal constant RECEIVE_POLICY_GUARD_ADDRESS = 0xB10C000000000000000000000000000000000000;
     address internal constant STORAGE_CREDITS_ADDRESS = 0x1060000000000000000000000000000000000000;
     address internal constant CURRENT_COMMITTEE_ADDRESS = 0xC077e00000000000000000000000000000000000;
@@ -43,6 +45,7 @@ library StdPrecompiles {
     IValidatorConfigV2 internal constant VALIDATOR_CONFIG_V2 = IValidatorConfigV2(VALIDATOR_CONFIG_V2_ADDRESS);
     IAddressRegistry internal constant ADDRESS_REGISTRY = IAddressRegistry(ADDRESS_REGISTRY_ADDRESS);
     ISignatureVerifier internal constant SIGNATURE_VERIFIER = ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS);
+    ITIP20ChannelReserve internal constant TIP20_CHANNEL_RESERVE = ITIP20ChannelReserve(TIP20_CHANNEL_RESERVE_ADDRESS);
     IReceivePolicyGuard internal constant RECEIVE_POLICY_GUARD = IReceivePolicyGuard(RECEIVE_POLICY_GUARD_ADDRESS);
     IStorageCredits internal constant STORAGE_CREDITS = IStorageCredits(STORAGE_CREDITS_ADDRESS);
     ICurrentCommittee internal constant CURRENT_COMMITTEE = ICurrentCommittee(CURRENT_COMMITTEE_ADDRESS);
