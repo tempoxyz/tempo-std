@@ -145,6 +145,21 @@ contract KeyAuthorizationLibTest {
         );
     }
 
+    function testFeePayerSignatureRejectsInvalidRecoveryBytes() public view {
+        bytes memory signature = new bytes(65);
+        uint8[4] memory invalidValues = [uint8(2), 26, 29, type(uint8).max];
+        for (uint256 i = 0; i < invalidValues.length; i++) {
+            signature[64] = bytes1(invalidValues[i]);
+            try this.encodeFeePayerTransaction(signature) {
+                revert("expected revert");
+            } catch {}
+        }
+    }
+
+    function encodeFeePayerTransaction(bytes memory signature) external pure {
+        TempoTransactionLib.create().withChainId(1).withFeePayerSignature(signature).encode(VmRlp(VM_ADDRESS));
+    }
+
     function testExpiryRejectsZero() public view {
         KeyAuthorization memory authorization =
             KeyAuthorizationLib.create(1, IAccountKeychain.SignatureType.Secp256k1, KEY);
