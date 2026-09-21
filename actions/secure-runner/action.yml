@@ -1,7 +1,0 @@
-name: Secure runner
-description: Local wrapper for the pinned tempoxyz secure-runner action.
-
-runs:
-  using: composite
-  steps:
-    - uses: tempoxyz/gh-actions/actions/secure-runner@baf48ebcfcb26812085b8351125493b2ef8009ab # 2026-09-21T19-33-30Z-baf48ebc
