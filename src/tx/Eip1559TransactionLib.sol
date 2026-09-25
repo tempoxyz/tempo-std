@@ -25,9 +25,12 @@ library Eip1559TransactionLib {
     /// @notice EIP-1559 transaction type prefix.
     uint8 internal constant TX_TYPE = 0x02;
 
+    /// @notice Thrown when `block.chainid` does not fit in a `uint64`.
+    error ChainIdExceedsUint64();
+
     /// @notice Creates a new EIP-1559 transaction with default values.
     function create() internal view returns (Eip1559Transaction memory tx_) {
-        require(block.chainid <= type(uint64).max, "chain ID exceeds uint64");
+        if (block.chainid > type(uint64).max) revert ChainIdExceedsUint64();
         // Safe after the explicit range check above.
         // forge-lint: disable-next-line(unsafe-typecast)
         tx_.chainId = uint64(block.chainid);
