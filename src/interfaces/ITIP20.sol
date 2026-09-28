@@ -61,6 +61,12 @@ interface ITIP20 is ITIP20RolesAuthErr {
     /// @param amount The amount of tokens burned.
     event BurnBlocked(address indexed from, uint256 amount);
 
+    /// @notice Emitted when tokens are burned from any unprotected account (T12+).
+    /// @param burner The BURN_AT_ROLE holder that performed the burn.
+    /// @param from The address from which tokens were burned.
+    /// @param amount The amount of tokens burned.
+    event BurnAt(address indexed burner, address indexed from, uint256 amount);
+
     /// @notice Emitted when tokens are minted.
     /// @param to The address that received the newly minted tokens.
     /// @param amount The amount of tokens minted.
@@ -102,6 +108,10 @@ interface ITIP20 is ITIP20RolesAuthErr {
     /// @return The burn blocked role identifier.
     function BURN_BLOCKED_ROLE() external view returns (bytes32);
 
+    /// @notice Returns the role identifier for burning from any unprotected account (T12+).
+    /// @return The burn-at role identifier.
+    function BURN_AT_ROLE() external view returns (bytes32);
+
     /// @notice Returns the role identifier for issuing tokens.
     /// @return The issuer role identifier.
     function ISSUER_ROLE() external view returns (bytes32);
@@ -135,6 +145,13 @@ interface ITIP20 is ITIP20RolesAuthErr {
     /// @param from The address to burn tokens from.
     /// @param amount The amount of tokens to burn.
     function burnBlocked(address from, uint256 amount) external;
+
+    /// @notice Burns from any unprotected account without checking its transfer policy (T12+).
+    /// @dev Requires BURN_AT_ROLE and an unpaused token. Burns from the transaction origin
+    ///      count against its access key's token spending limit.
+    /// @param from The address to burn tokens from.
+    /// @param amount The amount of tokens to burn.
+    function burnAt(address from, uint256 amount) external;
 
     /// @notice Burns tokens from the caller's balance with an attached memo.
     /// @param amount The amount of tokens to burn.
