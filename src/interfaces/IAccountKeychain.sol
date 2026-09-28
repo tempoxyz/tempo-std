@@ -223,6 +223,14 @@ interface IAccountKeychain {
     function getKey(address account, address keyId) external view returns (KeyInfo memory);
 
     /**
+     * @notice Get the funding policy ID for an access key
+     * @param account The account address
+     * @param keyId The key ID
+     * @return The policy ID, or zero if the key has no funding permission
+     */
+    function getFundingPolicyId(address account, address keyId) external view returns (uint64);
+
+    /**
      * @notice Get remaining spending limit for a key-token pair (legacy)
      * @param account The account address
      * @param keyId The key ID
