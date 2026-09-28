@@ -65,7 +65,7 @@ interface ITIP20 is ITIP20RolesAuthErr {
     /// @param burner The BURN_AT_ROLE holder that performed the burn.
     /// @param from The address from which tokens were burned.
     /// @param amount The amount of tokens burned.
-    event BurnAt(address indexed burner, address indexed from, uint256 amount);
+    event BurnAt(address indexed burner, address indexed from, uint256 indexed amount);
 
     /// @notice Emitted when tokens are minted.
     /// @param to The address that received the newly minted tokens.
