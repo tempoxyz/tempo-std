@@ -245,4 +245,19 @@ interface ITIP403Registry {
     /// @param tokenFilterId The token filter policy ID
     /// @param recoveryAuthority The recovery authority address for blocked receipts
     function setReceivePolicy(uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAuthority) external;
+
+    /// @notice Adds an account to a whitelist policy; available from T13
+    /// @dev Admin-only. Emits WhitelistUpdated with allowed=true.
+    /// Scope an add-only access key to this selector instead of modifyPolicyWhitelist.
+    /// Use allowAnyCalls=false and an empty recipients list. The scope permits additions
+    /// to any whitelist administered by the account, not only a particular policy ID.
+    /// @param policyId The ID of the whitelist policy to modify
+    /// @param account The account to allow
+    function addPolicyWhitelist(uint64 policyId, address account) external;
+
+    /// @notice Removes an account from a whitelist policy; available from T13
+    /// @dev Admin-only. Emits WhitelistUpdated with allowed=false.
+    /// @param policyId The ID of the whitelist policy to modify
+    /// @param account The account to disallow
+    function removePolicyWhitelist(uint64 policyId, address account) external;
 }
