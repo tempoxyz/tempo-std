@@ -260,4 +260,19 @@ interface ITIP403Registry {
     /// @param policyId The ID of the whitelist policy to modify
     /// @param account The account to disallow
     function removePolicyWhitelist(uint64 policyId, address account) external;
+
+    /// @notice Adds an account to a blacklist policy; available from T13
+    /// @dev Admin-only. Emits BlacklistUpdated with restricted=true.
+    /// Scope a freeze-only access key to this selector instead of modifyPolicyBlacklist.
+    /// Use allowAnyCalls=false and an empty recipients list. The scope permits additions
+    /// to any blacklist administered by the account, not only a particular policy ID.
+    /// @param policyId The ID of the blacklist policy to modify
+    /// @param account The account to restrict
+    function addPolicyBlacklist(uint64 policyId, address account) external;
+
+    /// @notice Removes an account from a blacklist policy; available from T13
+    /// @dev Admin-only. Emits BlacklistUpdated with restricted=false.
+    /// @param policyId The ID of the blacklist policy to modify
+    /// @param account The account to unrestrict
+    function removePolicyBlacklist(uint64 policyId, address account) external;
 }
