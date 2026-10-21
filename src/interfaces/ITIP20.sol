@@ -306,6 +306,12 @@ interface ITIP20 is ITIP20RolesAuthErr {
     ///      a URI or its scheme is not in the allowlist. An empty string is valid
     ///      and clears the logo URI.
     function setLogoURI(string calldata newLogoURI) external;
+
+    // TIP-1112: Root key retirement
+
+    /// @notice The account's root key is retired (TIP-1112): it has a configuration commitment,
+    ///         so its root key signature no longer authorizes this operation.
+    error RootKeyRetired(address account);
 }
 
 /// @title The interface for TIP-20 compliant tokens
