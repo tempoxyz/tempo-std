@@ -61,9 +61,13 @@ library SignatureLib {
         return sVal > P256_N_HALF ? bytes32(P256_N - sVal) : s;
     }
 
-    /// @notice Flips `v` (27 -> 28 / 28 -> 27) when `s` had to be negated.
+    /// @notice Flips `v` when `s` had to be negated.
+    /// @dev Accepts both signature conventions: `27/28` (EIP-155 style) and `0/1`
+    ///      (y-parity style, as returned by alloy signers). Negating `s` flips the
+    ///      recovery parity, so the flipped `v` preserves the caller's convention.
     function flipV(uint8 v) internal pure returns (uint8) {
-        return v == 27 ? 28 : 27;
+        if (v >= 27) return v == 27 ? 28 : 27;
+        return v == 0 ? 1 : 0;
     }
 
     /*//////////////////////////////////////////////////////////////
