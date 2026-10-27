@@ -12,9 +12,13 @@ library StdTokens {
     address internal constant ALPHA_USD_ADDRESS = 0x20C0000000000000000000000000000000000001;
     address internal constant BETA_USD_ADDRESS = 0x20C0000000000000000000000000000000000002;
     address internal constant THETA_USD_ADDRESS = 0x20C0000000000000000000000000000000000003;
+    /// @dev OpenUSD (OUSD), same address on Tempo mainnet and testnet.
+    /// <https://github.com/tempoxyz/tempo/blob/main/crates/hardfork/src/constants.rs>
+    address internal constant OUSD_ADDRESS = 0x20c0000000000000000000006a37DA5C996874BE;
 
     ITIP20 internal constant PATH_USD = ITIP20(PATH_USD_ADDRESS);
     ITIP20 internal constant ALPHA_USD = ITIP20(ALPHA_USD_ADDRESS);
     ITIP20 internal constant BETA_USD = ITIP20(BETA_USD_ADDRESS);
     ITIP20 internal constant THETA_USD = ITIP20(THETA_USD_ADDRESS);
+    ITIP20 internal constant OUSD = ITIP20(OUSD_ADDRESS);
 }
