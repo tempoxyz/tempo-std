@@ -106,9 +106,11 @@ interface IValidatorConfigV2 {
     /// @param backtrace Additional error context
     error NotIp(string input, string backtrace);
 
-    /// @notice Thrown from T14 onward when an ingress or egress address exceeds 255 bytes
+    /// @notice Thrown from T14 onward when an ingress or egress address parses but is not accepted,
+    ///         such as one exceeding 255 bytes or an IPv4-mapped IPv6 address
     /// @param input The invalid input that was provided
-    error InvalidIp(string input);
+    /// @param reason Why the input was rejected
+    error InvalidIp(string input, string reason);
 
     /// @notice Thrown when ingress IP is already in use by another active validator
     /// @param ingress The ingress address that is already in use
