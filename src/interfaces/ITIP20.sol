@@ -312,6 +312,14 @@ interface ITIP20 is ITIP20RolesAuthErr {
     /// @notice The account's root key is retired (TIP-1112): it has a configuration commitment,
     ///         so its root key signature no longer authorizes this operation.
     error RootKeyRetired(address account);
+
+    // TIP-1094: Zone virtual deposit addresses
+
+    /// @notice A transfer targets a zone deposit address with key version 0, which selects no key.
+    error UnsupportedAddressVersion(uint8 version);
+
+    /// @notice A transfer targets a zone deposit address whose zone ID has no registered portal.
+    error ZoneUnregistered(uint32 zoneId);
 }
 
 /// @title The interface for TIP-20 compliant tokens
