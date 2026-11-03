@@ -126,6 +126,14 @@ interface IStablecoinDEX {
         view
         returns (uint128 head, uint128 tail, uint128 totalLiquidity);
 
+    /// @notice Sums the remaining amount of up to `maxOrders` orders at a tick, starting at
+    /// `startOrderId` (0 starts at the tick's head). Returns the partial sum and the next order ID
+    /// to read (0 once the tick's tail has been read). Available from T14.
+    function getTickLiquidity(address base, int16 tick, bool isBid, uint128 startOrderId, uint32 maxOrders)
+        external
+        view
+        returns (uint128 liquidity, uint128 nextOrderId);
+
     function getOrder(uint128 orderId) external view returns (Order memory);
 
     function pairKey(address tokenA, address tokenB) external pure returns (bytes32 key);
