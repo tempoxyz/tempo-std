@@ -241,6 +241,9 @@ interface ITIP20 is ITIP20RolesAuthErr {
     /// @return The active transfer policy ID.
     function transferPolicyId() external view returns (uint64);
 
+    /// @notice Returns the active TIP-1145 sender, recipient and mint-recipient modes.
+    function transferPolicy() external view returns (uint8 senderMode, uint8 recipientMode, uint8 mintRecipientMode);
+
     /// @notice Transfers tokens with an attached memo.
     /// @param to The address to transfer tokens to.
     /// @param amount The amount of tokens to transfer.

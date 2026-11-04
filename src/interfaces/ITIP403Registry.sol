@@ -24,6 +24,30 @@ interface ITIP403Registry {
         RECEIVE_POLICY
     }
 
+    /// @notice TIP-1145 token-specific policy modes.
+    enum PolicyMode {
+        ALLOW,
+        DENY,
+        WHITELIST,
+        BLACKLIST
+    }
+
+    /// @notice TIP-1145 issuer membership roles.
+    enum AuthRole {
+        SENDER,
+        RECIPIENT,
+        MINT_RECIPIENT,
+        TRANSFER,
+        ALL
+    }
+
+    /// @notice TIP-1145 membership list kinds.
+    enum MembershipKind {
+        ISSUER,
+        RECEIVE_TOKEN,
+        RECEIVE_SENDER
+    }
+
     /// @notice Data structure containing policy configuration
     /// @param policyType The type of policy (whitelist or blacklist)
     /// @param admin The address authorized to modify this policy
@@ -245,4 +269,68 @@ interface ITIP403Registry {
     /// @param tokenFilterId The token filter policy ID
     /// @param recoveryAuthority The recovery authority address for blocked receipts
     function setReceivePolicy(uint64 senderPolicyId, uint64 tokenFilterId, address recoveryAuthority) external;
+
+    /// @notice The token address is invalid.
+    error InvalidToken();
+    /// @notice The policy mode is invalid.
+    error InvalidPolicyMode();
+    /// @notice The authorization role is invalid.
+    error InvalidAuthRole();
+    /// @notice The address is reserved by the protocol.
+    error AddressReserved();
+    /// @notice Packed tokens do not support generic policy IDs.
+    error TokenPolicyIdsUnsupported();
+    /// @notice Generic receive policy IDs are unsupported after TIP-1145.
+    error ReceivePolicyIdsUnsupported();
+
+    /// @notice Emitted when token-specific issuer modes change.
+    event TransferPolicyUpdated(
+        address indexed token, PolicyMode senderMode, PolicyMode recipientMode, PolicyMode mintRecipientMode
+    );
+    /// @notice Emitted when an address-level receive configuration changes.
+    event ReceivePolicyUpdated(
+        address indexed receiver, PolicyMode tokenMode, PolicyMode senderMode, address recoveryAuthority
+    );
+    /// @notice Emitted when an issuer or receiver list membership changes.
+    event PolicyMembershipUpdated(
+        MembershipKind kind, address indexed owner, address indexed account, AuthRole role, bool isMember
+    );
+
+    /// @notice Returns a token's issuer policy configuration.
+    function tokenPolicy(address token)
+        external
+        view
+        returns (bool isSet, PolicyMode senderMode, PolicyMode recipientMode, PolicyMode mintRecipientMode);
+    /// @notice Returns a token/account pair's packed membership flags.
+    function tokenUserFlags(address token, address account) external view returns (uint8 flags);
+    /// @notice Checks an account against a token's policy for the selected role.
+    function isTokenAuthorized(address token, address account, AuthRole role) external view returns (bool authorized);
+    /// @notice Returns an address-level receive configuration.
+    function receiveConfig(address receiver)
+        external
+        view
+        returns (bool hasReceivePolicy, PolicyMode tokenMode, PolicyMode senderMode, address recoveryAuthority);
+    /// @notice Returns whether a sender belongs to a receiver's sender list.
+    function receiveSenderMembership(address receiver, address sender) external view returns (bool member);
+    /// @notice Sets the token's sender, recipient and mint-recipient modes.
+    function setTokenPolicyModes(
+        address token,
+        PolicyMode senderMode,
+        PolicyMode recipientMode,
+        PolicyMode mintRecipientMode
+    ) external;
+    /// @notice Adds accounts to the token's selected issuer membership lists.
+    function addTokenMembers(address token, address[] calldata accounts, AuthRole role) external;
+    /// @notice Removes accounts from the token's selected issuer membership lists.
+    function removeTokenMembers(address token, address[] calldata accounts, AuthRole role) external;
+    /// @notice Sets the caller's token and sender receive filters.
+    function setReceiveConfig(PolicyMode tokenMode, PolicyMode senderMode, address recoveryAuthority) external;
+    /// @notice Adds tokens to the caller's receive-token list.
+    function addReceiveTokens(address[] calldata tokens) external;
+    /// @notice Removes tokens from the caller's receive-token list.
+    function removeReceiveTokens(address[] calldata tokens) external;
+    /// @notice Adds senders to the caller's receive-sender list.
+    function addReceiveSenders(address[] calldata senders) external;
+    /// @notice Removes senders from the caller's receive-sender list.
+    function removeReceiveSenders(address[] calldata senders) external;
 }
