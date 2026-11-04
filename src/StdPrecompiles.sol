@@ -14,6 +14,7 @@ import {IStorageCredits} from "./interfaces/IStorageCredits.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
 import {IValidatorConfigV2} from "./interfaces/IValidatorConfigV2.sol";
 import {INonce} from "./interfaces/INonce.sol";
+import {IZoneFactory} from "./interfaces/IZoneFactory.sol";
 
 /// @title Standard Precompiles Library for Tempo
 ///
@@ -32,6 +33,10 @@ library StdPrecompiles {
     address internal constant RECEIVE_POLICY_GUARD_ADDRESS = 0xB10C000000000000000000000000000000000000;
     address internal constant STORAGE_CREDITS_ADDRESS = 0x1060000000000000000000000000000000000000;
     address internal constant CURRENT_COMMITTEE_ADDRESS = 0xC077e00000000000000000000000000000000000;
+    address internal constant ZONE_FACTORY_ADDRESS = 0x5AF2000000000000000000000000000000000000;
+    address internal constant ZONE_PORTAL_IMPL_ADDRESS = 0x5AD1000000000000000000000000000000000000;
+    address internal constant ZONE_VERIFIER_ADDRESS = 0x5A56000000000000000000000000000000000000;
+    address internal constant ZONE_MESSENGER_ADDRESS = 0x5A4D000000000000000000000000000000000000;
 
     IFeeManager internal constant TIP_FEE_MANAGER = IFeeManager(TIP_FEE_MANAGER_ADDRESS);
     ITIP403Registry internal constant TIP403_REGISTRY = ITIP403Registry(TIP403_REGISTRY_ADDRESS);
@@ -46,4 +51,5 @@ library StdPrecompiles {
     IReceivePolicyGuard internal constant RECEIVE_POLICY_GUARD = IReceivePolicyGuard(RECEIVE_POLICY_GUARD_ADDRESS);
     IStorageCredits internal constant STORAGE_CREDITS = IStorageCredits(STORAGE_CREDITS_ADDRESS);
     ICurrentCommittee internal constant CURRENT_COMMITTEE = ICurrentCommittee(CURRENT_COMMITTEE_ADDRESS);
+    IZoneFactory internal constant ZONE_FACTORY = IZoneFactory(ZONE_FACTORY_ADDRESS);
 }
