@@ -448,6 +448,7 @@ library TempoTransactionLib {
         }
 
         // Normalize v from 27/28 to 0/1 parity (Rust decodes as bool)
+        require(v == 0 || v == 1 || v == 27 || v == 28, "Invalid fee payer signature recovery");
         uint8 parity = v >= 27 ? v - 27 : v;
 
         // Encode as RLP list [v, r, s] matching Rust's Signature::write_rlp_vrs order
