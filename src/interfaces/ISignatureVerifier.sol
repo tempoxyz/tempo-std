@@ -16,12 +16,19 @@ interface ISignatureVerifier {
     /// @return signer Address of the signer if valid, reverts otherwise
     function recover(bytes32 hash, bytes calldata signature) external view returns (address signer);
 
-    /// @notice Verifies a signer against a Tempo signature (secp256k1, P256, WebAuthn).
-    /// @param signer The input address verified against the recovered signer
+    /// @notice Verifies whether a signature approves a hash for an account.
+    /// @param account The account expected to approve
     /// @param hash The message hash that was signed
-    /// @param signature The encoded signature (see Tempo Transaction spec for formats)
-    /// @return True if the input address signed, false otherwise. Reverts on invalid signatures.
-    function verify(address signer, bytes32 hash, bytes calldata signature) external view returns (bool);
+    /// @param signature The encoded signature
+    /// @dev Before T15, whether a primitive signature recovers to account.
+    /// (+T15) by signature type, against account's current state (TIP-1168):
+    /// - primitive: recovers to account, and account has no configuration commitment
+    /// - keychain: same as `verifyKeychainAdmin`
+    /// - configurable account: same as `verifyConfigurableAccount`
+    /// Use `recover` for a stateless check.
+    /// @return True if the signature approves hash for account. Reverts on malformed or invalid
+    /// signatures.
+    function verify(address account, bytes32 hash, bytes calldata signature) external view returns (bool);
 
     /// @notice Verifies whether a keychain signature was produced by an active key (TIP-1049, T6).
     /// @param account The expected embedded root account
@@ -40,4 +47,16 @@ interface ISignatureVerifier {
     /// @dev Selector-gated to the T6 hardfork; reverts as an unknown selector before T6.
     /// @return True if the recovered key is account or an active admin key on account.
     function verifyKeychainAdmin(address account, bytes32 hash, bytes calldata signature) external view returns (bool);
+
+    /// @notice Verifies a configurable account signature against current account state (TIP-1107, T14).
+    /// @param account The configurable account expected to approve
+    /// @param hash The message hash that was signed
+    /// @param signature The encoded configurable account signature
+    /// @dev Selector-gated to the T14 hardfork; reverts as an unknown selector before T14.
+    /// @return True if the owner quorum approves hash for account under its current configuration,
+    /// false for an account or configuration mismatch. Reverts for malformed or invalid approvals.
+    function verifyConfigurableAccount(address account, bytes32 hash, bytes calldata signature)
+        external
+        view
+        returns (bool);
 }
