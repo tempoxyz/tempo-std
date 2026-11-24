@@ -240,7 +240,7 @@ library SignatureLib {
     }
 
     /// @notice Calls `verify` on the SignatureVerifier precompile.
-    function verify(address signer, bytes32 hash, bytes memory signature) internal view returns (bool) {
-        return ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS).verify(signer, hash, signature);
+    function verify(address account, bytes32 hash, bytes memory signature) internal view returns (bool) {
+        return ISignatureVerifier(SIGNATURE_VERIFIER_ADDRESS).verify(account, hash, signature);
     }
 }
