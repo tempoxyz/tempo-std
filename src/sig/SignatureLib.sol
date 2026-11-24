@@ -61,9 +61,14 @@ library SignatureLib {
         return sVal > P256_N_HALF ? bytes32(P256_N - sVal) : s;
     }
 
-    /// @notice Flips `v` (27 -> 28 / 28 -> 27) when `s` had to be negated.
+    /// @notice Flips `v` (27 <-> 28, 0 <-> 1) when `s` had to be negated.
+    /// @dev Unrecognized values are returned unchanged instead of being coerced to 27.
     function flipV(uint8 v) internal pure returns (uint8) {
-        return v == 27 ? 28 : 27;
+        if (v == 27) return 28;
+        if (v == 28) return 27;
+        if (v == 0) return 1;
+        if (v == 1) return 0;
+        return v;
     }
 
     /*//////////////////////////////////////////////////////////////
