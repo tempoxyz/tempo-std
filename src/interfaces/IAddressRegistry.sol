@@ -36,4 +36,8 @@ interface IAddressRegistry {
 
     /// @notice Decodes a virtual address into its components.
     function decodeVirtualAddress(address addr) external pure returns (bool isVirtual, bytes4 masterId, bytes6 userTag);
+
+    /// @notice Returns whether `addr` is implicitly approved for transfers under TIP-1022 rules.
+    /// @dev Selector-gated to the T5 hardfork; treated as unknown on earlier schedules.
+    function isImplicitlyApproved(address addr) external view returns (bool);
 }
