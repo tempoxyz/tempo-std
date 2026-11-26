@@ -12,6 +12,7 @@ import {ISignatureVerifier} from "./interfaces/ISignatureVerifier.sol";
 import {IStablecoinDEX} from "./interfaces/IStablecoinDEX.sol";
 import {IStorageCredits} from "./interfaces/IStorageCredits.sol";
 import {ITIP20} from "./interfaces/ITIP20.sol";
+import {ITIP20ChannelReserve} from "./interfaces/ITIP20ChannelReserve.sol";
 import {ITIP20Factory} from "./interfaces/ITIP20Factory.sol";
 import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {IReceivePolicyGuard} from "./interfaces/IReceivePolicyGuard.sol";
@@ -70,6 +71,10 @@ abstract contract Tempo {
     // TIP-20 factory precompile
     ITIP20Factory public constant tip20Factory = StdPrecompiles.TIP20_FACTORY;
     address public constant TIP20_FACTORY = StdPrecompiles.TIP20_FACTORY_ADDRESS;
+
+    // TIP-20 channel reserve precompile
+    ITIP20ChannelReserve public constant tip20ChannelReserve = StdPrecompiles.TIP20_CHANNEL_RESERVE;
+    address public constant TIP20_CHANNEL_RESERVE = StdPrecompiles.TIP20_CHANNEL_RESERVE_ADDRESS;
 
     // pathUSD is just a TIP20 at a special address (0x20C0...) with token_id=0
     ITIP20 public constant pathUSD = StdTokens.PATH_USD;
