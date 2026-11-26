@@ -17,6 +17,7 @@ import {ITIP403Registry} from "./interfaces/ITIP403Registry.sol";
 import {IReceivePolicyGuard} from "./interfaces/IReceivePolicyGuard.sol";
 import {IValidatorConfig} from "./interfaces/IValidatorConfig.sol";
 import {IValidatorConfigV2} from "./interfaces/IValidatorConfigV2.sol";
+import {IZoneFactory} from "./interfaces/IZoneFactory.sol";
 
 abstract contract Tempo {
     // Nonce precompile
@@ -38,6 +39,10 @@ abstract contract Tempo {
     // Current committee precompile
     ICurrentCommittee public constant currentCommittee = StdPrecompiles.CURRENT_COMMITTEE;
     address public constant CURRENT_COMMITTEE = StdPrecompiles.CURRENT_COMMITTEE_ADDRESS;
+
+    // Zone factory precompile
+    IZoneFactory public constant zoneFactory = StdPrecompiles.ZONE_FACTORY;
+    address public constant ZONE_FACTORY = StdPrecompiles.ZONE_FACTORY_ADDRESS;
 
     // Fee manager precompile
     IFeeManager public constant feeAMM = StdPrecompiles.TIP_FEE_MANAGER;
